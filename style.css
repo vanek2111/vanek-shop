@@ -199,3 +199,13 @@ footer {
     .navbar nav { display: none; }
     .products-grid { grid-template-columns: 1fr; }
 }
+/* Hover-эффект на карточках товара */
+.card {
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  border-color: #00ffa3;
+  box-shadow: 0 12px 30px rgba(0, 255, 163, 0.15);
+}
