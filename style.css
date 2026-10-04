@@ -1,8 +1,31 @@
 /* ============ RESET ============ */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
-/* ============ ПЕРЕМЕННЫЕ ============ */
-:root {
+/* ============ СВЕТЛАЯ ТЕМА (по умолчанию) ============ */
+:root,
+[data-theme="light"] {
+    --bg: #ffffff;
+    --bg-soft: #f7f7fb;
+    --card: #ffffff;
+    --card-hover: #ffffff;
+    --text: #0a0a0f;
+    --text-muted: #6b6b7e;
+    --accent: #8b5cf6;
+    --accent-2: #7c3aed;
+    --accent-glow: rgba(139, 92, 246, 0.25);
+    --border: rgba(139, 92, 246, 0.15);
+    --border-hover: rgba(139, 92, 246, 0.5);
+    --shadow-card: 0 4px 20px rgba(139, 92, 246, 0.08);
+    --shadow-card-hover: 0 20px 48px rgba(139, 92, 246, 0.18);
+    --radius: 16px;
+    --navbar-bg: rgba(255, 255, 255, 0.75);
+    --footer-bg: linear-gradient(180deg, transparent, rgba(139, 92, 246, 0.04));
+    --hero-grad-1: rgba(139, 92, 246, 0.12);
+    --hero-grad-2: rgba(167, 139, 250, 0.08);
+}
+
+/* ============ ТЁМНАЯ ТЕМА ============ */
+[data-theme="dark"] {
     --bg: #0a0a0f;
     --bg-soft: #0f0f18;
     --card: rgba(20, 20, 32, 0.6);
@@ -14,7 +37,12 @@
     --accent-glow: rgba(139, 92, 246, 0.35);
     --border: rgba(139, 92, 246, 0.15);
     --border-hover: rgba(139, 92, 246, 0.5);
-    --radius: 16px;
+    --shadow-card: none;
+    --shadow-card-hover: 0 20px 48px rgba(139, 92, 246, 0.2);
+    --navbar-bg: rgba(10, 10, 15, 0.7);
+    --footer-bg: linear-gradient(180deg, transparent, rgba(139, 92, 246, 0.03));
+    --hero-grad-1: rgba(139, 92, 246, 0.25);
+    --hero-grad-2: rgba(167, 139, 250, 0.15);
 }
 
 /* ============ ОСНОВА ============ */
@@ -27,6 +55,7 @@ body {
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
     overflow-x: hidden;
+    transition: background 0.3s ease, color 0.3s ease;
 }
 
 .container {
@@ -39,12 +68,13 @@ body {
 .navbar {
     position: fixed;
     top: 0; left: 0; right: 0;
-    background: rgba(10, 10, 15, 0.7);
+    background: var(--navbar-bg);
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
     border-bottom: 1px solid var(--border);
     padding: 16px 0;
     z-index: 100;
+    transition: background 0.3s ease, border-color 0.3s ease;
 }
 
 .navbar .container {
@@ -110,6 +140,46 @@ body {
 
 .navbar nav a:hover::after { width: 100%; }
 
+/* Actions (тема + корзина) */
+.navbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Кнопка темы */
+.theme-toggle {
+    width: 40px; height: 40px;
+    display: grid; place-items: center;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.25s ease;
+    position: relative;
+}
+
+.theme-toggle:hover {
+    border-color: var(--border-hover);
+    background: var(--accent-glow);
+    transform: translateY(-1px);
+}
+
+.theme-toggle svg {
+    position: absolute;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* Светлая тема → показываем ЛУНУ (переключимся в тёмную) */
+[data-theme="light"] .theme-toggle .icon-sun { opacity: 0; transform: rotate(-90deg); }
+[data-theme="light"] .theme-toggle .icon-moon { opacity: 1; transform: rotate(0); }
+
+/* Тёмная тема → показываем СОЛНЦЕ */
+[data-theme="dark"] .theme-toggle .icon-sun { opacity: 1; transform: rotate(0); }
+[data-theme="dark"] .theme-toggle .icon-moon { opacity: 0; transform: rotate(90deg); }
+
+/* Корзина */
 .cart-btn {
     display: flex;
     align-items: center;
@@ -142,9 +212,10 @@ body {
     position: absolute;
     inset: 0;
     background:
-        radial-gradient(ellipse 60% 50% at 50% 0%, rgba(139, 92, 246, 0.25), transparent 70%),
-        radial-gradient(ellipse 40% 40% at 80% 100%, rgba(167, 139, 250, 0.15), transparent 70%);
+        radial-gradient(ellipse 60% 50% at 50% 0%, var(--hero-grad-1), transparent 70%),
+        radial-gradient(ellipse 40% 40% at 80% 100%, var(--hero-grad-2), transparent 70%);
     pointer-events: none;
+    transition: background 0.3s ease;
 }
 
 .hero .container { position: relative; z-index: 2; }
@@ -154,8 +225,8 @@ body {
     padding: 8px 16px;
     border: 1px solid var(--border);
     border-radius: 100px;
-    background: rgba(139, 92, 246, 0.08);
-    color: var(--accent-2);
+    background: var(--accent-glow);
+    color: var(--accent);
     font-size: 13px;
     font-weight: 600;
     margin-bottom: 24px;
@@ -201,7 +272,7 @@ body {
     font-weight: 700;
     font-size: 15px;
     text-decoration: none;
-    transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+    transition: transform 0.2s, box-shadow 0.2s, background 0.2s, border-color 0.2s;
     cursor: pointer;
     border: none;
 }
@@ -218,13 +289,13 @@ body {
 }
 
 .btn-ghost {
-    background: rgba(255, 255, 255, 0.03);
+    background: transparent;
     color: var(--text);
     border: 1px solid var(--border);
 }
 
 .btn-ghost:hover {
-    background: rgba(139, 92, 246, 0.1);
+    background: var(--accent-glow);
     border-color: var(--border-hover);
 }
 
@@ -259,6 +330,8 @@ body {
 .catalog {
     padding: 100px 0 120px;
     position: relative;
+    background: var(--bg-soft);
+    transition: background 0.3s ease;
 }
 
 .section-head {
@@ -281,7 +354,7 @@ body {
 /* ============ СЕТКА ============ */
 .products-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
     gap: 24px;
 }
 
@@ -301,34 +374,18 @@ body {
     overflow: hidden;
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
+    box-shadow: var(--shadow-card);
     transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
     display: flex;
     flex-direction: column;
-}
-
-.product-card::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: var(--radius);
-    padding: 1px;
-    background: linear-gradient(135deg, transparent, rgba(139, 92, 246, 0.4), transparent);
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    opacity: 0;
-    transition: opacity 0.3s;
-    pointer-events: none;
 }
 
 .product-card:hover {
     transform: translateY(-8px);
     border-color: var(--border-hover);
     background: var(--card-hover);
-    box-shadow: 0 20px 48px rgba(139, 92, 246, 0.2);
+    box-shadow: var(--shadow-card-hover);
 }
-
-.product-card:hover::before { opacity: 1; }
 
 .product-image {
     width: 100%;
@@ -355,15 +412,16 @@ body {
     margin-bottom: 6px;
     letter-spacing: -0.01em;
     line-height: 1.4;
+    color: var(--text);
 }
 
 .product-brand {
-    font-size: 13px;
+    font-size: 12px;
     color: var(--text-muted);
     margin-bottom: 16px;
     text-transform: uppercase;
-    letter-spacing: 0.06em;
-    font-weight: 500;
+    letter-spacing: 0.08em;
+    font-weight: 600;
 }
 
 .product-price {
@@ -377,21 +435,18 @@ body {
 
 .product-price::after {
     content: ' ₽';
-    font-size: 16px;
+    font-size: 15px;
     color: var(--text-muted);
     font-weight: 600;
     margin-left: 2px;
 }
 
-/* ⚠️ ВАЖНО: убираем ₽ из JS-вывода, чтобы не дублировалось */
-/* Если в app.js стоит .toLocaleString() + ' ₽' — сотри ' ₽' там */
-
 .product-btn {
     display: block;
     width: 100%;
     padding: 13px;
-    background: rgba(139, 92, 246, 0.12);
-    color: var(--accent-2);
+    background: var(--accent-glow);
+    color: var(--accent);
     border: 1px solid var(--border-hover);
     border-radius: 12px;
     font-family: inherit;
@@ -415,7 +470,8 @@ body {
 footer {
     border-top: 1px solid var(--border);
     padding: 56px 0 40px;
-    background: linear-gradient(180deg, transparent, rgba(139, 92, 246, 0.03));
+    background: var(--footer-bg);
+    transition: background 0.3s ease, border-color 0.3s ease;
 }
 
 .footer-inner {
@@ -460,4 +516,5 @@ footer {
     .products-grid { grid-template-columns: 1fr; gap: 16px; }
     .footer-inner { flex-direction: column; text-align: center; }
     .footer-links { justify-content: center; flex-wrap: wrap; }
+    .theme-toggle { width: 36px; height: 36px; }
 }
