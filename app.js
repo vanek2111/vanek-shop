@@ -90,6 +90,22 @@ function renderProducts() {
 
     noResults.style.display = 'none';
     grid.innerHTML = state.filteredProducts.map(product => `
+        <a href="product.html?id=${product.id}" class="product-card">
+            <img src="${product.image}" alt="${product.name}" class="product-image" loading="lazy">
+            <div class="product-body">
+                <div class="product-name">${product.name}</div>
+                <div class="product-brand">${product.brand}</div>
+                <div class="product-price">${product.price.toLocaleString()}</div>
+                <button class="product-btn" onclick="event.preventDefault(); addToCart(${product.id})">
+                    В корзину
+                </button>
+            </div>
+        </a>
+    `).join('');
+}
+
+    noResults.style.display = 'none';
+    grid.innerHTML = state.filteredProducts.map(product => `
         <div class="product-card">
             <img src="${product.image}" alt="${product.name}" class="product-image" loading="lazy">
             <div class="product-body">
