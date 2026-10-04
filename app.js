@@ -7,8 +7,8 @@ const db = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // ========== СОСТОЯНИЕ ==========
 const state = {
-    allProducts: [],      // все товары из базы
-    filteredProducts: [], // отфильтрованные
+    allProducts: [],
+    filteredProducts: [],
     search: '',
     category: 'all',
     sort: 'default'
@@ -39,7 +39,6 @@ async function loadProducts() {
 function renderCategories() {
     const container = document.getElementById('category-filters');
 
-    // Собираем уникальные категории из товаров
     const categories = ['all', ...new Set(state.allProducts.map(p => p.category))];
 
     const labels = {
@@ -52,7 +51,6 @@ function renderCategories() {
         </button>
     `).join('');
 
-    // Вешаем обработчики
     container.querySelectorAll('.category-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             container.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
@@ -67,12 +65,10 @@ function renderCategories() {
 function applyFilters() {
     let result = [...state.allProducts];
 
-    // 1. Фильтр по категории
     if (state.category !== 'all') {
         result = result.filter(p => p.category === state.category);
     }
 
-    // 2. Поиск
     if (state.search.trim()) {
         const q = state.search.toLowerCase().trim();
         result = result.filter(p =>
@@ -81,7 +77,6 @@ function applyFilters() {
         );
     }
 
-    // 3. Сортировка
     if (state.sort === 'price-asc') {
         result.sort((a, b) => a.price - b.price);
     } else if (state.sort === 'price-desc') {
@@ -128,7 +123,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const sortSelect = document.getElementById('sort-select');
     const resetBtn = document.getElementById('reset-filters');
 
-    // Поиск — с задержкой (чтобы не дёргать на каждую букву)
     let searchTimeout;
     searchInput.addEventListener('input', (e) => {
         clearTimeout(searchTimeout);
@@ -138,13 +132,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 200);
     });
 
-    // Сортировка
     sortSelect.addEventListener('change', (e) => {
         state.sort = e.target.value;
         applyFilters();
     });
 
-    // Сброс фильтров
     resetBtn.addEventListener('click', () => {
         state.search = '';
         state.category = 'all';
