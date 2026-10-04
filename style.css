@@ -1919,3 +1919,18 @@ footer {
     max-height: none;
     overflow: visible;
 }
+/* Фикс ширины поиска в сайдбаре */
+.filters-sidebar .search-box {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.filters-sidebar .filter-block {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.filters-sidebar .filters-categories,
+.filters-sidebar .filters-brands {
+    width: 100%;
+}
