@@ -14,7 +14,7 @@ const state = {
     sort: 'default'
 };
 
-// ========== SVG-ЗАГЛУШКИ ПО КАТЕГОРИЯМ ==========
+// ========== SVG-ИКОНКИ ==========
 const categoryIcons = {
     'Аудио': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"></path><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"></path></svg>',
     'Периферия': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"></rect><line x1="6" y1="10" x2="6" y2="14"></line><line x1="10" y1="10" x2="10" y2="14"></line></svg>',
@@ -45,8 +45,41 @@ async function loadProducts() {
 
     state.allProducts = data;
     state.filteredProducts = [...data];
+
+    renderHitsAndNew();
     renderCategories();
     applyFilters();
+}
+
+// ========== ХИТЫ И НОВИНКИ ==========
+function renderHitsAndNew() {
+    // Хиты — самые дорогие 4 (условно "топовые")
+    const hits = [...state.allProducts].sort((a, b) => b.price - a.price).slice(0, 4);
+
+    // Новинки — 4 товара с наибольшим id (только что добавленные)
+    const newItems = [...state.allProducts].sort((a, b) => b.id - a.id).slice(0, 4);
+
+    document.getElementById('hits-grid').innerHTML = hits.map(p => renderCard(p, 'ХИТ')).join('');
+    document.getElementById('new-grid').innerHTML = newItems.map(p => renderCard(p, 'NEW')).join('');
+}
+
+function renderCard(product, badge) {
+    return `
+        <a href="product.html?id=${product.id}" class="product-card">
+            <div class="product-image-wrap">
+                ${getIcon(product.category)}
+                ${badge ? `<div class="product-badge">${badge}</div>` : ''}
+            </div>
+            <div class="product-body">
+                <div class="product-name">${product.name}</div>
+                <div class="product-brand">${product.brand}</div>
+                <div class="product-price">${product.price.toLocaleString()}</div>
+                <button class="product-btn" onclick="event.preventDefault(); addToCart(${product.id})">
+                    В корзину
+                </button>
+            </div>
+        </a>
+    `;
 }
 
 // ========== КАТЕГОРИИ ==========
@@ -95,7 +128,6 @@ function applyFilters() {
     renderProducts();
 }
 
-// ========== ОТРИСОВКА ==========
 function renderProducts() {
     const grid = document.getElementById('products-grid');
     const noResults = document.getElementById('no-results');
@@ -107,21 +139,7 @@ function renderProducts() {
     }
 
     noResults.style.display = 'none';
-    grid.innerHTML = state.filteredProducts.map(product => `
-        <a href="product.html?id=${product.id}" class="product-card">
-            <div class="product-image-wrap">
-                ${getIcon(product.category)}
-            </div>
-            <div class="product-body">
-                <div class="product-name">${product.name}</div>
-                <div class="product-brand">${product.brand}</div>
-                <div class="product-price">${product.price.toLocaleString()}</div>
-                <button class="product-btn" onclick="event.preventDefault(); addToCart(${product.id})">
-                    В корзину
-                </button>
-            </div>
-        </a>
-    `).join('');
+    grid.innerHTML = state.filteredProducts.map(p => renderCard(p, null)).join('');
 }
 
 // ========== ФИЛЬТРЫ ==========
@@ -185,13 +203,8 @@ function saveCart(cart) {
 function addToCart(productId) {
     const cart = getCart();
     const existing = cart.find(item => item.id === productId);
-
-    if (existing) {
-        existing.qty += 1;
-    } else {
-        cart.push({ id: productId, qty: 1 });
-    }
-
+    if (existing) existing.qty += 1;
+    else cart.push({ id: productId, qty: 1 });
     saveCart(cart);
     showToast('Товар добавлен в корзину');
 }
