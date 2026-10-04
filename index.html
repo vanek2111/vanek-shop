@@ -1,1 +1,58 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ExoTech — интернет-магазин электроники</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
 
+    <!-- ШАПКА -->
+    <header class="navbar">
+        <div class="container">
+            <a href="/" class="logo">⚡ ExoTech</a>
+            <nav>
+                <a href="#catalog">Каталог</a>
+                <a href="#about">О нас</a>
+                <a href="#contacts">Контакты</a>
+            </nav>
+            <a href="cart.html" class="cart-btn">
+                🛒 <span id="cart-count">0</span>
+            </a>
+        </div>
+    </header>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="container">
+            <h1>Электроника нового поколения</h1>
+            <p>Гаджеты, гаджеты, гаджеты — и всё это с быстрой доставкой</p>
+            <a href="#catalog" class="btn">Смотреть каталог</a>
+        </div>
+    </section>
+
+    <!-- КАТАЛОГ -->
+    <section id="catalog" class="catalog">
+        <div class="container">
+            <h2>Популярные товары</h2>
+            <div class="products-grid" id="products-grid">
+                <!-- Товары загрузятся из Supabase через JS -->
+                <p>Загрузка товаров...</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ФУТЕР -->
+    <footer>
+        <div class="container">
+            <p>© 2026 ExoTech · Made with 💚</p>
+        </div>
+    </footer>
+
+    <!-- ПОДКЛЮЧЕНИЕ СКРИПТА -->
+    <script src="app.js"></script>
+</body>
+</html>
