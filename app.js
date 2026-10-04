@@ -17,10 +17,7 @@ const state = {
 // ========== ЗАГРУЗКА ТОВАРОВ ==========
 async function loadProducts() {
     const grid = document.getElementById('products-grid');
-
-    const { data, error } = await db
-        .from('products')
-        .select('*');
+    const { data, error } = await db.from('products').select('*');
 
     if (error) {
         console.error('Ошибка:', error);
@@ -30,7 +27,6 @@ async function loadProducts() {
 
     state.allProducts = data;
     state.filteredProducts = [...data];
-
     renderCategories();
     applyFilters();
 }
@@ -38,12 +34,8 @@ async function loadProducts() {
 // ========== ОТРИСОВКА КАТЕГОРИЙ ==========
 function renderCategories() {
     const container = document.getElementById('category-filters');
-
     const categories = ['all', ...new Set(state.allProducts.map(p => p.category))];
-
-    const labels = {
-        'all': 'Все товары'
-    };
+    const labels = { 'all': 'Все товары' };
 
     container.innerHTML = categories.map(cat => `
         <button class="category-btn ${cat === 'all' ? 'active' : ''}" data-category="${cat}">
@@ -77,13 +69,9 @@ function applyFilters() {
         );
     }
 
-    if (state.sort === 'price-asc') {
-        result.sort((a, b) => a.price - b.price);
-    } else if (state.sort === 'price-desc') {
-        result.sort((a, b) => b.price - a.price);
-    } else if (state.sort === 'name-asc') {
-        result.sort((a, b) => a.name.localeCompare(b.name, 'ru'));
-    }
+    if (state.sort === 'price-asc') result.sort((a, b) => a.price - b.price);
+    else if (state.sort === 'price-desc') result.sort((a, b) => b.price - a.price);
+    else if (state.sort === 'name-asc') result.sort((a, b) => a.name.localeCompare(b.name, 'ru'));
 
     state.filteredProducts = result;
     renderProducts();
@@ -101,7 +89,6 @@ function renderProducts() {
     }
 
     noResults.style.display = 'none';
-
     grid.innerHTML = state.filteredProducts.map(product => `
         <div class="product-card">
             <img src="${product.image}" alt="${product.name}" class="product-image" loading="lazy">
@@ -109,49 +96,63 @@ function renderProducts() {
                 <div class="product-name">${product.name}</div>
                 <div class="product-brand">${product.brand}</div>
                 <div class="product-price">${product.price.toLocaleString()}</div>
-                <button class="product-btn" onclick="addToCart(${product.id})">
-                    В корзину
-                </button>
+                <button class="product-btn" onclick="addToCart(${product.id})">В корзину</button>
             </div>
         </div>
     `).join('');
 }
 
-// ========== ОБРАБОТЧИКИ ФИЛЬТРОВ ==========
+// ========== ФИЛЬТРЫ ==========
 document.addEventListener('DOMContentLoaded', () => {
     const searchInput = document.getElementById('search-input');
     const sortSelect = document.getElementById('sort-select');
     const resetBtn = document.getElementById('reset-filters');
 
-    let searchTimeout;
-    searchInput.addEventListener('input', (e) => {
-        clearTimeout(searchTimeout);
-        searchTimeout = setTimeout(() => {
-            state.search = e.target.value;
+    if (searchInput) {
+        let t;
+        searchInput.addEventListener('input', (e) => {
+            clearTimeout(t);
+            t = setTimeout(() => {
+                state.search = e.target.value;
+                applyFilters();
+            }, 200);
+        });
+    }
+
+    if (sortSelect) {
+        sortSelect.addEventListener('change', (e) => {
+            state.sort = e.target.value;
             applyFilters();
-        }, 200);
-    });
+        });
+    }
 
-    sortSelect.addEventListener('change', (e) => {
-        state.sort = e.target.value;
-        applyFilters();
-    });
-
-    resetBtn.addEventListener('click', () => {
-        state.search = '';
-        state.category = 'all';
-        state.sort = 'default';
-        searchInput.value = '';
-        sortSelect.value = 'default';
-        document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
-        document.querySelector('.category-btn[data-category="all"]')?.classList.add('active');
-        applyFilters();
-    });
+    if (resetBtn) {
+        resetBtn.addEventListener('click', () => {
+            state.search = '';
+            state.category = 'all';
+            state.sort = 'default';
+            searchInput.value = '';
+            sortSelect.value = 'default';
+            document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+            document.querySelector('.category-btn[data-category="all"]')?.classList.add('active');
+            applyFilters();
+        });
+    }
 });
 
 // ========== КОРЗИНА ==========
 function getCart() {
-    return JSON.parse(localStorage.getItem('cart') || '[]');
+    try {
+        const raw = JSON.parse(localStorage.getItem('cart') || '[]');
+        if (raw.length > 0 && typeof raw[0] === 'number') {
+            const converted = raw.map(id => ({ id, qty: 1 }));
+            localStorage.setItem('cart', JSON.stringify(converted));
+            return converted;
+        }
+        return raw;
+    } catch (e) {
+        return [];
+    }
 }
 
 function saveCart(cart) {
@@ -161,20 +162,45 @@ function saveCart(cart) {
 
 function addToCart(productId) {
     const cart = getCart();
-    if (!cart.includes(productId)) {
-        cart.push(productId);
-        saveCart(cart);
-        alert('Товар добавлен в корзину!');
+    const existing = cart.find(item => item.id === productId);
+
+    if (existing) {
+        existing.qty += 1;
     } else {
-        alert('Товар уже в корзине');
+        cart.push({ id: productId, qty: 1 });
     }
+
+    saveCart(cart);
+    showToast('Товар добавлен в корзину');
 }
 
 function updateCartCount() {
     const cart = getCart();
-    document.getElementById('cart-count').textContent = cart.length;
+    const totalCount = cart.reduce((sum, item) => sum + item.qty, 0);
+    const el = document.getElementById('cart-count');
+    if (el) el.textContent = totalCount;
+}
+
+// ========== ТОСТ ==========
+function showToast(message) {
+    const oldToast = document.querySelector('.toast');
+    if (oldToast) oldToast.remove();
+
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.textContent = message;
+    document.body.appendChild(toast);
+
+    requestAnimationFrame(() => toast.classList.add('toast-show'));
+
+    setTimeout(() => {
+        toast.classList.remove('toast-show');
+        setTimeout(() => toast.remove(), 300);
+    }, 2500);
 }
 
 // ========== СТАРТ ==========
-loadProducts();
+if (document.getElementById('products-grid')) {
+    loadProducts();
+}
 updateCartCount();
