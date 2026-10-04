@@ -4,8 +4,8 @@
 /* ============ СВЕТЛАЯ ТЕМА (по умолчанию) ============ */
 :root,
 [data-theme="light"] {
-    --bg: #ffffff;
-    --bg-soft: #f7f7fb;
+    --bg: #f7f7fa;
+    --bg-soft: ##ffffff;
     --card: #ffffff;
     --card-hover: #ffffff;
     --text: #0a0a0f;
