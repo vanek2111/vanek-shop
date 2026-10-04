@@ -31,7 +31,7 @@ async function loadProducts() {
     applyFilters();
 }
 
-// ========== ОТРИСОВКА КАТЕГОРИЙ ==========
+// ========== КАТЕГОРИИ ==========
 function renderCategories() {
     const container = document.getElementById('category-filters');
     const categories = ['all', ...new Set(state.allProducts.map(p => p.category))];
@@ -101,20 +101,6 @@ function renderProducts() {
                 </button>
             </div>
         </a>
-    `).join('');
-}
-
-    noResults.style.display = 'none';
-    grid.innerHTML = state.filteredProducts.map(product => `
-        <div class="product-card">
-            <img src="${product.image}" alt="${product.name}" class="product-image" loading="lazy">
-            <div class="product-body">
-                <div class="product-name">${product.name}</div>
-                <div class="product-brand">${product.brand}</div>
-                <div class="product-price">${product.price.toLocaleString()}</div>
-                <button class="product-btn" onclick="addToCart(${product.id})">В корзину</button>
-            </div>
-        </div>
     `).join('');
 }
 
