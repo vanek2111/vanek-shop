@@ -5,13 +5,13 @@ const SUPABASE_KEY = 'sb_publishable_zOXsiffHOAy8S693kYoL6g_CivX9ffr';
 const { createClient } = supabase;
 const db = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-// ========== ПОЛУЧАЕМ ID ИЗ URL ==========
+// ========== ID ИЗ URL ==========
 function getIdFromUrl() {
     const params = new URLSearchParams(window.location.search);
     return params.get('id');
 }
 
-// ========== ЗАГРУЗКА ТОВАРА ==========
+// ========== ЗАГРУЗКА ==========
 async function loadProduct() {
     const container = document.getElementById('product-content');
     const id = getIdFromUrl();
@@ -53,8 +53,10 @@ async function loadProduct() {
 function renderProduct(p) {
     const container = document.getElementById('product-content');
 
-    const specsHtml = p.specs && Object.keys(p.specs).length > 0
-        ? `
+    // Характеристики — если есть
+    let specsHtml = '';
+    if (p.specs && typeof p.specs === 'object' && Object.keys(p.specs).length > 0) {
+        specsHtml = `
             <div class="product-detail-specs">
                 <h2>Характеристики</h2>
                 <dl class="specs-list">
@@ -66,8 +68,8 @@ function renderProduct(p) {
                     `).join('')}
                 </dl>
             </div>
-        `
-        : '';
+        `;
+    }
 
     container.innerHTML = `
         <div class="product-detail">
