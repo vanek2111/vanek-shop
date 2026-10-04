@@ -12,7 +12,7 @@
     --text-muted: #6b6b7e;
     --accent: #8b5cf6;
     --accent-2: #7c3aed;
-    --accent-glow: rgba(139, 92, 246, 0.25);
+    --accent-glow: rgba(139, 92, 246, 0.12);
     --border: rgba(139, 92, 246, 0.15);
     --border-hover: rgba(139, 92, 246, 0.5);
     --shadow-card: 0 4px 20px rgba(139, 92, 246, 0.08);
@@ -140,7 +140,6 @@ body {
 
 .navbar nav a:hover::after { width: 100%; }
 
-/* Actions (тема + корзина) */
 .navbar-actions {
     display: flex;
     align-items: center;
@@ -151,7 +150,7 @@ body {
 .theme-toggle {
     width: 40px; height: 40px;
     display: grid; place-items: center;
-    background: transparent;
+    background: var(--bg-soft);
     border: 1px solid var(--border);
     border-radius: 100px;
     color: var(--text);
@@ -171,11 +170,8 @@ body {
     transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
-/* Светлая тема → показываем ЛУНУ (переключимся в тёмную) */
 [data-theme="light"] .theme-toggle .icon-sun { opacity: 0; transform: rotate(-90deg); }
 [data-theme="light"] .theme-toggle .icon-moon { opacity: 1; transform: rotate(0); }
-
-/* Тёмная тема → показываем СОЛНЦЕ */
 [data-theme="dark"] .theme-toggle .icon-sun { opacity: 1; transform: rotate(0); }
 [data-theme="dark"] .theme-toggle .icon-moon { opacity: 0; transform: rotate(90deg); }
 
@@ -331,7 +327,8 @@ body {
     padding: 100px 0 120px;
     position: relative;
     background: var(--bg-soft);
-    transition: background 0.3s ease;
+    border-top: 1px solid var(--border);
+    transition: background 0.3s ease, border-color 0.3s ease;
 }
 
 .section-head {
