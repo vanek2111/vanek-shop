@@ -5,16 +5,7 @@ const SUPABASE_KEY = 'sb_publishable_zOXsiffHOAy8S693kYoL6g_CivX9ffr';
 const { createClient } = supabase;
 const db = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-// ========== СОСТОЯНИЕ ==========
-const state = {
-    allProducts: [],
-    filteredProducts: [],
-    search: '',
-    category: 'all',
-    sort: 'default'
-};
-
-// ========== SVG-ИКОНКИ ==========
+// ========== ИКОНКИ ==========
 const categoryIcons = {
     'Аудио': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"></path><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"></path></svg>',
     'Периферия': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"></rect><line x1="6" y1="10" x2="6" y2="14"></line><line x1="10" y1="10" x2="10" y2="14"></line></svg>',
@@ -34,30 +25,18 @@ function getIcon(category) {
 
 // ========== ЗАГРУЗКА ==========
 async function loadProducts() {
-    const grid = document.getElementById('products-grid');
     const { data, error } = await db.from('products').select('*');
-
     if (error) {
         console.error('Ошибка:', error);
-        grid.innerHTML = '<p>Не удалось загрузить товары</p>';
         return;
     }
-
-    state.allProducts = data;
-    state.filteredProducts = [...data];
-
-    renderHitsAndNew();
-    renderCategories();
-    applyFilters();
+    renderHitsAndNew(data);
 }
 
 // ========== ХИТЫ И НОВИНКИ ==========
-function renderHitsAndNew() {
-    // Хиты — самые дорогие 4 (условно "топовые")
-    const hits = [...state.allProducts].sort((a, b) => b.price - a.price).slice(0, 4);
-
-    // Новинки — 4 товара с наибольшим id (только что добавленные)
-    const newItems = [...state.allProducts].sort((a, b) => b.id - a.id).slice(0, 4);
+function renderHitsAndNew(data) {
+    const hits = [...data].sort((a, b) => b.price - a.price).slice(0, 4);
+    const newItems = [...data].sort((a, b) => b.id - a.id).slice(0, 4);
 
     document.getElementById('hits-grid').innerHTML = hits.map(p => renderCard(p, 'ХИТ')).join('');
     document.getElementById('new-grid').innerHTML = newItems.map(p => renderCard(p, 'NEW')).join('');
@@ -81,104 +60,6 @@ function renderCard(product, badge) {
         </a>
     `;
 }
-
-// ========== КАТЕГОРИИ ==========
-function renderCategories() {
-    const container = document.getElementById('category-filters');
-    const categories = ['all', ...new Set(state.allProducts.map(p => p.category))];
-    const labels = { 'all': 'Все товары' };
-
-    container.innerHTML = categories.map(cat => `
-        <button class="category-btn ${cat === 'all' ? 'active' : ''}" data-category="${cat}">
-            ${labels[cat] || cat}
-        </button>
-    `).join('');
-
-    container.querySelectorAll('.category-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            container.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            state.category = btn.dataset.category;
-            applyFilters();
-        });
-    });
-}
-
-// ========== ФИЛЬТРАЦИЯ ==========
-function applyFilters() {
-    let result = [...state.allProducts];
-
-    if (state.category !== 'all') {
-        result = result.filter(p => p.category === state.category);
-    }
-
-    if (state.search.trim()) {
-        const q = state.search.toLowerCase().trim();
-        result = result.filter(p =>
-            p.name.toLowerCase().includes(q) ||
-            p.brand.toLowerCase().includes(q)
-        );
-    }
-
-    if (state.sort === 'price-asc') result.sort((a, b) => a.price - b.price);
-    else if (state.sort === 'price-desc') result.sort((a, b) => b.price - a.price);
-    else if (state.sort === 'name-asc') result.sort((a, b) => a.name.localeCompare(b.name, 'ru'));
-
-    state.filteredProducts = result;
-    renderProducts();
-}
-
-function renderProducts() {
-    const grid = document.getElementById('products-grid');
-    const noResults = document.getElementById('no-results');
-
-    if (state.filteredProducts.length === 0) {
-        grid.innerHTML = '';
-        noResults.style.display = 'block';
-        return;
-    }
-
-    noResults.style.display = 'none';
-    grid.innerHTML = state.filteredProducts.map(p => renderCard(p, null)).join('');
-}
-
-// ========== ФИЛЬТРЫ ==========
-document.addEventListener('DOMContentLoaded', () => {
-    const searchInput = document.getElementById('search-input');
-    const sortSelect = document.getElementById('sort-select');
-    const resetBtn = document.getElementById('reset-filters');
-
-    if (searchInput) {
-        let t;
-        searchInput.addEventListener('input', (e) => {
-            clearTimeout(t);
-            t = setTimeout(() => {
-                state.search = e.target.value;
-                applyFilters();
-            }, 200);
-        });
-    }
-
-    if (sortSelect) {
-        sortSelect.addEventListener('change', (e) => {
-            state.sort = e.target.value;
-            applyFilters();
-        });
-    }
-
-    if (resetBtn) {
-        resetBtn.addEventListener('click', () => {
-            state.search = '';
-            state.category = 'all';
-            state.sort = 'default';
-            searchInput.value = '';
-            sortSelect.value = 'default';
-            document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
-            document.querySelector('.category-btn[data-category="all"]')?.classList.add('active');
-            applyFilters();
-        });
-    }
-});
 
 // ========== КОРЗИНА ==========
 function getCart() {
@@ -235,7 +116,7 @@ function showToast(message) {
 }
 
 // ========== СТАРТ ==========
-if (document.getElementById('products-grid')) {
+if (document.getElementById('hits-grid')) {
     loadProducts();
 }
 updateCartCount();
