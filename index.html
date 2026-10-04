@@ -76,17 +76,48 @@
     </section>
 
     <!-- КАТАЛОГ -->
-    <section id="catalog" class="catalog">
-        <div class="container">
-            <div class="section-head">
-                <h2>Популярные товары</h2>
-                <p>Выбор наших покупателей</p>
+<section id="catalog" class="catalog">
+    <div class="container">
+        <div class="section-head">
+            <h2>Популярные товары</h2>
+            <p>Выбор наших покупателей</p>
+        </div>
+
+        <!-- ПАНЕЛЬ ФИЛЬТРОВ -->
+        <div class="filters">
+            <div class="filters-row">
+                <div class="search-box">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                    <input type="text" id="search-input" placeholder="Поиск по названию или бренду...">
+                </div>
+
+                <select id="sort-select" class="sort-select">
+                    <option value="default">По умолчанию</option>
+                    <option value="price-asc">Цена: по возрастанию</option>
+                    <option value="price-desc">Цена: по убыванию</option>
+                    <option value="name-asc">Название: А → Я</option>
+                </select>
             </div>
-            <div class="products-grid" id="products-grid">
-                <p class="loading">Загрузка товаров…</p>
+
+            <div class="filters-categories" id="category-filters">
+                <!-- Кнопки категорий сгенерирует JS -->
             </div>
         </div>
-    </section>
+
+        <div class="products-grid" id="products-grid">
+            <p class="loading">Загрузка товаров…</p>
+        </div>
+
+        <!-- Если ничего не нашлось -->
+        <div class="no-results" id="no-results" style="display: none;">
+            <p>Ничего не найдено 😕</p>
+            <button id="reset-filters">Сбросить фильтры</button>
+        </div>
+    </div>
+</section>
 
     <!-- ФУТЕР -->
     <footer>
