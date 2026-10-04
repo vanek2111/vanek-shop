@@ -5,7 +5,7 @@
 :root,
 [data-theme="light"] {
     --bg: #f7f7fa;
-    --bg-soft: ##ffffff;
+    --bg-soft: #ffffff;
     --card: #ffffff;
     --card-hover: #ffffff;
     --text: #0a0a0f;
