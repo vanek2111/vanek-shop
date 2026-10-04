@@ -53,6 +53,22 @@ async function loadProduct() {
 function renderProduct(p) {
     const container = document.getElementById('product-content');
 
+    const specsHtml = p.specs && Object.keys(p.specs).length > 0
+        ? `
+            <div class="product-detail-specs">
+                <h2>Характеристики</h2>
+                <dl class="specs-list">
+                    ${Object.entries(p.specs).map(([key, value]) => `
+                        <div class="specs-row">
+                            <dt>${key}</dt>
+                            <dd>${value}</dd>
+                        </div>
+                    `).join('')}
+                </dl>
+            </div>
+        `
+        : '';
+
     container.innerHTML = `
         <div class="product-detail">
             <div class="product-detail-image">
@@ -62,7 +78,6 @@ function renderProduct(p) {
             <div class="product-detail-info">
                 <div class="product-detail-brand">${p.brand}</div>
                 <h1 class="product-detail-name">${p.name}</h1>
-
                 <div class="product-detail-category">${p.category}</div>
 
                 <p class="product-detail-description">
@@ -87,6 +102,8 @@ function renderProduct(p) {
                 </div>
             </div>
         </div>
+
+        ${specsHtml}
     `;
 }
 
