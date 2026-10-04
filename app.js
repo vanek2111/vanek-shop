@@ -25,7 +25,7 @@ async function loadProducts() {
             <div class="product-body">
                 <div class="product-name">${product.name}</div>
                 <div class="product-brand">${product.brand}</div>
-                <div class="product-price">${product.price.toLocaleString()} ₽</div>
+                <div class="product-price">${product.price.toLocaleString()} </div>
                 <button class="product-btn" onclick="addToCart(${product.id})">
                     В корзину
                 </button>
