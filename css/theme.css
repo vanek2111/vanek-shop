@@ -588,3 +588,44 @@ footer {
     .cta-form { margin: 0 auto 12px; }
     .cta-note { text-align: center; }
 }
+/* -------- ЛОГОТИП — новый стиль -------- */
+.logo {
+    font-family: var(--font-display, 'Space Grotesk', sans-serif);
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    gap: 12px;
+}
+
+.logo-mark {
+    width: 32px;
+    height: 32px;
+    display: grid;
+    place-items: center;
+    background: none;
+    border-radius: 0;
+    box-shadow: none;
+    color: var(--accent, #c8ff00);
+    transition: transform 0.3s ease;
+}
+
+.logo-mark svg {
+    width: 32px;
+    height: 32px;
+    display: block;
+}
+
+.logo:hover .logo-mark {
+    transform: rotate(-8deg) scale(1.05);
+}
+
+.logo-text {
+    color: var(--text);
+    letter-spacing: 0.05em;
+}
+
+.logo-text em {
+    font-style: normal;
+    color: var(--accent, #c8ff00);
+}
