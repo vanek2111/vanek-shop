@@ -47,6 +47,42 @@ async function initCheckout() {
 
     allProducts = data;
     renderSummary();
+
+    // Автозаполнение формы для залогиненных
+    await prefillForm();
+}
+
+// ========== АВТОЗАПОЛНЕНИЕ ФОРМЫ ==========
+async function prefillForm() {
+    const { data: { session } } = await db.auth.getSession();
+    if (!session) return;
+
+    const { data: profile } = await db
+        .from('profiles')
+        .select('*')
+        .eq('id', session.user.id)
+        .single();
+
+    const nameEl = document.getElementById('customer-name');
+    const emailEl = document.getElementById('customer-email');
+    const phoneEl = document.getElementById('customer-phone');
+    const cityEl = document.getElementById('customer-city');
+    const addressEl = document.getElementById('customer-address');
+
+    // Имя — из профиля, иначе из metadata
+    if (nameEl && !nameEl.value) {
+        nameEl.value = profile?.full_name || session.user.user_metadata?.full_name || '';
+    }
+
+    // Email — из сессии
+    if (emailEl && !emailEl.value) {
+        emailEl.value = session.user.email || '';
+    }
+
+    // Остальное — из профиля
+    if (phoneEl && !phoneEl.value && profile?.phone) phoneEl.value = profile.phone;
+    if (cityEl && !cityEl.value && profile?.city) cityEl.value = profile.city;
+    if (addressEl && !addressEl.value && profile?.address) addressEl.value = profile.address;
 }
 
 // ========== ОТРИСОВКА ИТОГО ==========
@@ -150,7 +186,6 @@ function validateForm() {
 // ========== ОТПРАВКА ЗАКАЗА ==========
 async function submitOrder() {
     if (!validateForm()) {
-        // Скролл к первой ошибке
         const firstError = document.querySelector('.input-error');
         if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
         return;
@@ -175,21 +210,21 @@ async function submitOrder() {
     const total = items.reduce((sum, item) => sum + item.price * item.qty, 0);
 
     // Получаем текущего пользователя (если залогинен)
-const { data: { session } } = await db.auth.getSession();
-const userId = session?.user?.id || null;
+    const { data: { session } } = await db.auth.getSession();
+    const userId = session?.user?.id || null;
 
-const order = {
-    customer_name: document.getElementById('customer-name').value.trim(),
-    customer_phone: document.getElementById('customer-phone').value.trim(),
-    customer_email: document.getElementById('customer-email').value.trim(),
-    city: document.getElementById('customer-city').value.trim(),
-    address: document.getElementById('customer-address').value.trim(),
-    comment: document.getElementById('customer-comment').value.trim() || null,
-    payment_method: document.querySelector('input[name="payment"]:checked').value,
-    items: items,
-    total: total,
-    user_id: userId     // ← НОВОЕ ПОЛЕ
-};
+    const order = {
+        customer_name: document.getElementById('customer-name').value.trim(),
+        customer_phone: document.getElementById('customer-phone').value.trim(),
+        customer_email: document.getElementById('customer-email').value.trim(),
+        city: document.getElementById('customer-city').value.trim(),
+        address: document.getElementById('customer-address').value.trim(),
+        comment: document.getElementById('customer-comment').value.trim() || null,
+        payment_method: document.querySelector('input[name="payment"]:checked').value,
+        items: items,
+        total: total,
+        user_id: userId
+    };
 
     const { data, error } = await db.from('orders').insert(order).select().single();
 
@@ -227,7 +262,7 @@ function showSuccess(orderId) {
             </p>
             <div class="checkout-success-actions">
                 <a href="catalog.html" class="btn btn-primary">Вернуться в каталог</a>
-                <a href="index.html" class="btn btn-ghost">На главную</a>
+                <a href="account.html" class="btn btn-ghost">Личный кабинет</a>
             </div>
         </div>
     `;
