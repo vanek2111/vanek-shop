@@ -43,7 +43,7 @@
                 <a href="index.html#contacts">Контакты</a>
             </nav>
             <div class="navbar-actions">
-                <a href="account.html" class="auth-btn" id="auth-btn">
+                <a href="login.html" class="auth-btn" id="auth-btn">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                         <circle cx="12" cy="7" r="4"></circle>
@@ -81,7 +81,7 @@
         <a href="index.html#reviews">Отзывы</a>
         <a href="index.html#features">Почему мы</a>
         <a href="index.html#contacts">Контакты</a>
-        <a href="account.html" id="auth-btn-mobile">Войти</a>
+        <a href="account.html" id="auth-btn-mobile">Аккаунт</a>
     </nav>
 
     <main class="account-page">
@@ -118,32 +118,34 @@
 
     <script src="auth.js"></script>
     <script>
-        // Защита страницы + загрузка данных
+        // ========== ЗАГРУЗКА ЛК ==========
         async function initAccount() {
-    const session = await requireAuth();
-    if (!session) return;
+            const session = await requireAuth();
+            if (!session) return;
 
-    const user = session.user;
-    const userId = user.id;
-    const email = user.email;
+            const user = session.user;
+            const userId = user.id;
+            const email = user.email;
 
-    // Загружаем профиль и заказы
-    const [profileRes, ordersRes] = await Promise.all([
-        db.from('profiles').select('*').eq('id', userId).single(),
-        db.from('orders').select('*').eq('user_id', userId).order('created_at', { ascending: false })
-    ]);
+            // Загружаем профиль и заказы
+            const [profileRes, ordersRes] = await Promise.all([
+                db.from('profiles').select('*').eq('id', userId).single(),
+                db.from('orders').select('*').eq('user_id', userId).order('created_at', { ascending: false })
+            ]);
 
-    const profile = profileRes.data || {};
-    const orders = ordersRes.data || [];
+            const profile = profileRes.data || {};
+            const orders = ordersRes.data || [];
 
-    // Имя: сначала из profile, потом из metadata, потом из email
-    const fullName = profile.full_name
-        || user.user_metadata?.full_name
-        || email.split('@')[0];
+            // Имя: сначала из profile, потом из metadata, потом из email
+            const fullName = profile.full_name
+                || user.user_metadata?.full_name
+                || email.split('@')[0];
 
-    renderAccount({ user, profile, orders, fullName, email });
-}
+            renderAccount({ user, profile, orders, fullName, email });
+            updateHeaderAuth();
+        }
 
+        // ========== ОТРИСОВКА ==========
         function renderAccount({ profile, orders, fullName, email }) {
             const container = document.getElementById('account-content');
 
@@ -233,6 +235,7 @@
             document.getElementById('profile-form').addEventListener('submit', saveProfile);
         }
 
+        // ========== СОХРАНЕНИЕ ПРОФИЛЯ ==========
         async function saveProfile(e) {
             e.preventDefault();
             const btn = document.getElementById('profile-submit');
@@ -264,12 +267,15 @@
                 msg.className = 'auth-message error';
                 return;
             }
-                // Обновляем заголовок сразу после сохранения
-    const greeting = document.querySelector('.account-greeting');
-    if (greeting && fullName) {
-        greeting.textContent = `Привет, ${fullName.split(' ')[0]}!`;
-    }
 
+            // Обновляем заголовок сразу после сохранения
+            const greeting = document.querySelector('.account-greeting');
+            if (greeting && fullName) {
+                greeting.textContent = `Привет, ${fullName.split(' ')[0]}!`;
+            }
+
+            // Обновляем кнопку в шапке
+            await updateHeaderAuth();
 
             msg.textContent = '✓ Сохранено';
             msg.className = 'auth-message success';
@@ -278,9 +284,7 @@
             }, 2000);
         }
 
-        initAccount();
-
-        // Тема
+        // ========== ТЕМА ==========
         const toggle = document.getElementById('theme-toggle');
         toggle.addEventListener('click', () => {
             const current = document.documentElement.getAttribute('data-theme');
@@ -289,7 +293,7 @@
             localStorage.setItem('theme', next);
         });
 
-        // Бургер
+        // ========== БУРГЕР ==========
         const menuToggle = document.getElementById('menu-toggle');
         const mobileMenu = document.getElementById('mobile-menu');
         if (menuToggle && mobileMenu) {
@@ -304,6 +308,9 @@
                 });
             });
         }
+
+        // ========== СТАРТ ==========
+        initAccount();
     </script>
 </body>
 </html>
