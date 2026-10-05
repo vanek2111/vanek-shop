@@ -193,3 +193,70 @@
     /* Секции — чуть меньше отступы */
     section { padding: 36px 0; }
 }
+/* ============================================
+   МОБИЛКА — выезжающие фильтры + фиксы
+   ============================================ */
+
+@media (max-width: 900px) {
+    /* Показываем кнопку "Фильтры" */
+    .filters-open-btn { display: inline-flex; }
+    .filters-apply-btn { display: block; }
+
+    /* Сайдбар — выезжающая панель снизу */
+    .filters-sidebar {
+        position: fixed !important;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        top: auto;
+        max-height: 85vh;
+        border-radius: 20px 20px 0 0;
+        padding: 20px 20px 24px;
+        z-index: 99;
+        transform: translateY(100%);
+        transition: transform 0.3s ease;
+        overflow-y: auto;
+        display: flex;
+        box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    .filters-sidebar.open {
+        transform: translateY(0);
+    }
+
+    /* Показываем шапку панели и overlay */
+    .filters-mobile-head { display: flex; }
+    .filters-overlay { display: block; }
+
+    /* Скрываем старый сайдбар из потока */
+    .catalog-layout {
+        grid-template-columns: 1fr !important;
+        gap: 0;
+    }
+}
+
+/* -------- ФИКС ТОПБАРА на мобилке -------- */
+@media (max-width: 768px) {
+    .topbar {
+        padding: 8px 0;
+    }
+
+    .topbar-inner {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+        padding: 0;
+        overflow: visible;
+    }
+
+    .topbar-item {
+        font-size: 12px;
+        white-space: normal;
+    }
+
+    .topbar-item svg {
+        width: 12px;
+        height: 12px;
+    }
+}
