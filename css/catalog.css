@@ -206,3 +206,8 @@
     color: var(--text-muted);
     font-weight: 500;
 }
+/* Фикс поиска в сайдбаре — убираем min-width */
+.filters-sidebar .search-box {
+    min-width: 0;
+    width: 100%;
+}
