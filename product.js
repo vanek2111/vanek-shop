@@ -5,8 +5,7 @@ if (typeof window.db === 'undefined') {
         'sb_publishable_zOXsiffHOAy8S693kYoL6g_CivX9ffr'
     );
 }
-const db = window.db;
-
+var db = window.db;
 // ========== ID ИЗ URL ==========
 function getIdFromUrl() {
     const params = new URLSearchParams(window.location.search);
