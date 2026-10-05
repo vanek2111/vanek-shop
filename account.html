@@ -120,25 +120,29 @@
     <script>
         // Защита страницы + загрузка данных
         async function initAccount() {
-            const session = await requireAuth();
-            if (!session) return;
+    const session = await requireAuth();
+    if (!session) return;
 
-            const user = session.user;
-            const userId = user.id;
-            const fullName = user.user_metadata?.full_name || user.email.split('@')[0];
-            const email = user.email;
+    const user = session.user;
+    const userId = user.id;
+    const email = user.email;
 
-            // Загружаем профиль и заказы
-            const [profileRes, ordersRes] = await Promise.all([
-                db.from('profiles').select('*').eq('id', userId).single(),
-                db.from('orders').select('*').eq('user_id', userId).order('created_at', { ascending: false })
-            ]);
+    // Загружаем профиль и заказы
+    const [profileRes, ordersRes] = await Promise.all([
+        db.from('profiles').select('*').eq('id', userId).single(),
+        db.from('orders').select('*').eq('user_id', userId).order('created_at', { ascending: false })
+    ]);
 
-            const profile = profileRes.data || {};
-            const orders = ordersRes.data || [];
+    const profile = profileRes.data || {};
+    const orders = ordersRes.data || [];
 
-            renderAccount({ user, profile, orders, fullName, email });
-        }
+    // Имя: сначала из profile, потом из metadata, потом из email
+    const fullName = profile.full_name
+        || user.user_metadata?.full_name
+        || email.split('@')[0];
+
+    renderAccount({ user, profile, orders, fullName, email });
+}
 
         function renderAccount({ profile, orders, fullName, email }) {
             const container = document.getElementById('account-content');
