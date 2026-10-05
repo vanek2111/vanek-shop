@@ -410,3 +410,45 @@
         padding: 20px;
     }
 }
+/* -------- КНОПКА АВТОРИЗАЦИИ В ШАПКЕ -------- */
+.auth-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 14px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.auth-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(200, 255, 0, 0.05);
+}
+
+.auth-btn svg {
+    flex-shrink: 0;
+}
+
+.auth-btn.auth-logged {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+@media (max-width: 768px) {
+    .auth-btn {
+        padding: 8px 10px;
+        font-size: 12px;
+    }
+
+    .auth-btn span {
+        display: none;   /* на мобилке только иконка */
+    }
+}
