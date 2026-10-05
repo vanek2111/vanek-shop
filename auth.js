@@ -1,10 +1,11 @@
 // ========== ПОДКЛЮЧЕНИЕ К SUPABASE ==========
-// Используем глобальный db из app.js, если он есть
 if (typeof window.db === 'undefined') {
     window.db = supabase.createClient(
         'https://ytqxfykqiekphcpjrvon.supabase.co',
         'sb_publishable_zOXsiffHOAy8S693kYoL6g_CivX9ffr'
     );
+}
+var db = window.db;
 }
 const db = window.db;
 
