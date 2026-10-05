@@ -86,8 +86,33 @@
 
     <section class="catalog-page">
         <div class="container">
+            <!-- Кнопка "Фильтры" — видна только на мобилке -->
+            <button class="filters-open-btn" id="filters-open-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="4" y1="6" x2="20" y2="6"></line>
+                    <line x1="8" y1="12" x2="20" y2="12"></line>
+                    <line x1="12" y1="18" x2="20" y2="18"></line>
+                </svg>
+                Фильтры
+                <span class="filters-count" id="filters-count"></span>
+            </button>
+
             <div class="catalog-layout">
-                <aside class="filters-sidebar">
+                <!-- Затемнение фона на мобилке -->
+                <div class="filters-overlay" id="filters-overlay"></div>
+
+                <aside class="filters-sidebar" id="filters-sidebar">
+                    <!-- Шапка панели — видна только на мобилке -->
+                    <div class="filters-mobile-head">
+                        <h2>Фильтры</h2>
+                        <button class="filters-close-btn" id="filters-close-btn" aria-label="Закрыть">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                        </button>
+                    </div>
+
                     <div class="filter-block">
                         <h3>Поиск</h3>
                         <div class="search-box">
@@ -119,6 +144,7 @@
                     </div>
 
                     <button class="btn-reset-filters" id="reset-filters">Сбросить фильтры</button>
+                    <button class="filters-apply-btn" id="filters-apply-btn">Показать товары</button>
                 </aside>
 
                 <div class="catalog-main">
@@ -186,7 +212,6 @@
                 menuToggle.classList.toggle('active');
                 mobileMenu.classList.toggle('open');
             });
-
             mobileMenu.querySelectorAll('a').forEach(link => {
                 link.addEventListener('click', () => {
                     menuToggle.classList.remove('active');
@@ -194,6 +219,54 @@
                 });
             });
         }
+
+        // Логика выезжающих фильтров на мобилке
+        const openBtn = document.getElementById('filters-open-btn');
+        const closeBtn = document.getElementById('filters-close-btn');
+        const applyBtn = document.getElementById('filters-apply-btn');
+        const filtersSidebar = document.getElementById('filters-sidebar');
+        const filtersOverlay = document.getElementById('filters-overlay');
+
+        function openFilters() {
+            filtersSidebar.classList.add('open');
+            filtersOverlay.classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeFilters() {
+            filtersSidebar.classList.remove('open');
+            filtersOverlay.classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        if (openBtn) openBtn.addEventListener('click', openFilters);
+        if (closeBtn) closeBtn.addEventListener('click', closeFilters);
+        if (applyBtn) applyBtn.addEventListener('click', closeFilters);
+        if (filtersOverlay) filtersOverlay.addEventListener('click', closeFilters);
+
+        // Обновляем счётчик активных фильтров
+        function updateFiltersCount() {
+            const countEl = document.getElementById('filters-count');
+            if (!countEl) return;
+            let count = 0;
+            const activeCat = document.querySelector('.sidebar-category.active');
+            const activeBrand = document.querySelector('.sidebar-brand.active');
+            if (activeCat && activeCat.dataset.category !== 'all') count++;
+            if (activeBrand && activeBrand.dataset.brand !== 'all') count++;
+            const pMin = document.getElementById('price-min');
+            const pMax = document.getElementById('price-max');
+            const searchInput = document.getElementById('search-input');
+            if (pMin && pMin.value) count++;
+            if (pMax && pMax.value) count++;
+            if (searchInput && searchInput.value.trim()) count++;
+
+            countEl.textContent = count > 0 ? count : '';
+            countEl.style.display = count > 0 ? 'inline-flex' : 'none';
+        }
+
+        // Обновляем счётчик при изменениях
+        document.addEventListener('click', () => setTimeout(updateFiltersCount, 50));
+        document.addEventListener('input', () => setTimeout(updateFiltersCount, 50));
     </script>
 </body>
 </html>
