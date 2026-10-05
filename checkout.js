@@ -31,11 +31,75 @@ function updateCartCount() {
     if (el) el.textContent = totalCount;
 }
 
+// ========== МАСКА ТЕЛЕФОНА ==========
+function initPhoneMask() {
+    const phoneInput = document.getElementById('customer-phone');
+    if (!phoneInput) return;
+
+    // При фокусе — подставляем +7 (
+    phoneInput.addEventListener('focus', () => {
+        if (!phoneInput.value) {
+            phoneInput.value = '+7 (';
+        }
+    });
+
+    // При blur — если только +7 ( — очищаем
+    phoneInput.addEventListener('blur', () => {
+        if (phoneInput.value === '+7 (' || phoneInput.value === '+7') {
+            phoneInput.value = '';
+        }
+    });
+
+    // Обработка ввода
+    phoneInput.addEventListener('input', (e) => {
+        let value = e.target.value.replace(/\D/g, ''); // только цифры
+
+        // Если начинается с 8 — меняем на 7
+        if (value.startsWith('8')) {
+            value = '7' + value.slice(1);
+        }
+
+        // Если не начинается с 7 — добавляем
+        if (value && !value.startsWith('7')) {
+            value = '7' + value;
+        }
+
+        // Максимум 11 цифр (7 + 10)
+        value = value.slice(0, 11);
+
+        // Форматируем
+        let formatted = '';
+        if (value.length > 0) {
+            formatted = '+7';
+        }
+        if (value.length > 1) {
+            formatted += ' (' + value.slice(1, 4);
+        }
+        if (value.length >= 5) {
+            formatted += ') ' + value.slice(4, 7);
+        }
+        if (value.length >= 8) {
+            formatted += '-' + value.slice(7, 9);
+        }
+        if (value.length >= 10) {
+            formatted += '-' + value.slice(9, 11);
+        }
+
+        e.target.value = formatted;
+    });
+
+    // Запрещаем всё, кроме цифр и служебных клавиш
+    phoneInput.addEventListener('keypress', (e) => {
+        if (!/[0-9]/.test(e.key) && !['Backspace', 'Delete', 'Tab', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+            e.preventDefault();
+        }
+    });
+}
+
 // ========== ЗАГРУЗКА ТОВАРОВ ==========
 async function initCheckout() {
     const cart = getCart();
 
-    // Если корзина пустая — редирект в каталог
     if (cart.length === 0) {
         window.location.href = 'catalog.html';
         return;
@@ -49,12 +113,10 @@ async function initCheckout() {
 
     allProducts = data;
     renderSummary();
-
-    // Автозаполнение формы для залогиненных
     await prefillForm();
 }
 
-// ========== АВТОЗАПОЛНЕНИЕ ФОРМЫ ==========
+// ========== АВТОЗАПОЛНЕНИЕ ==========
 async function prefillForm() {
     const { data: { session } } = await db.auth.getSession();
     if (!session) return;
@@ -71,23 +133,33 @@ async function prefillForm() {
     const cityEl = document.getElementById('customer-city');
     const addressEl = document.getElementById('customer-address');
 
-    // Имя — из профиля, иначе из metadata
     if (nameEl && !nameEl.value) {
         nameEl.value = profile?.full_name || session.user.user_metadata?.full_name || '';
     }
-
-    // Email — из сессии
     if (emailEl && !emailEl.value) {
         emailEl.value = session.user.email || '';
     }
+    if (phoneEl && !phoneEl.value && profile?.phone) {
+        // Форматируем телефон из профиля
+        let digits = profile.phone.replace(/\D/g, '');
+        if (digits.startsWith('8')) digits = '7' + digits.slice(1);
+        if (!digits.startsWith('7')) digits = '7' + digits;
+        digits = digits.slice(0, 11);
 
-    // Остальное — из профиля
-    if (phoneEl && !phoneEl.value && profile?.phone) phoneEl.value = profile.phone;
+        let formatted = '';
+        if (digits.length > 0) formatted = '+7';
+        if (digits.length > 1) formatted += ' (' + digits.slice(1, 4);
+        if (digits.length >= 5) formatted += ') ' + digits.slice(4, 7);
+        if (digits.length >= 8) formatted += '-' + digits.slice(7, 9);
+        if (digits.length >= 10) formatted += '-' + digits.slice(9, 11);
+
+        phoneEl.value = formatted;
+    }
     if (cityEl && !cityEl.value && profile?.city) cityEl.value = profile.city;
     if (addressEl && !addressEl.value && profile?.address) addressEl.value = profile.address;
 }
 
-// ========== ОТРИСОВКА ИТОГО ==========
+// ========== ИТОГО ==========
 function renderSummary() {
     const cart = getCart();
     const container = document.getElementById('checkout-items');
@@ -162,8 +234,10 @@ function validateForm() {
         valid = false;
     }
 
-    if (!/^[\d\s\+\-\(\)]{10,}$/.test(phone)) {
-        showError('customer-phone', 'Введите корректный телефон');
+    // Телефон: строго 11 цифр, начинается с 7
+    const phoneDigits = phone.replace(/\D/g, '');
+    if (phoneDigits.length !== 11 || !phoneDigits.startsWith('7')) {
+        showError('customer-phone', 'Формат: +7 (999) 123-45-67');
         valid = false;
     }
 
@@ -211,7 +285,6 @@ async function submitOrder() {
 
     const total = items.reduce((sum, item) => sum + item.price * item.qty, 0);
 
-    // Получаем текущего пользователя (если залогинен)
     const { data: { session } } = await db.auth.getSession();
     const userId = session?.user?.id || null;
 
@@ -238,11 +311,8 @@ async function submitOrder() {
         return;
     }
 
-    // Очищаем корзину
     localStorage.removeItem('cart');
     updateCartCount();
-
-    // Показываем экран "Спасибо"
     showSuccess(data.id);
 }
 
@@ -270,72 +340,8 @@ function showSuccess(orderId) {
     `;
     window.scrollTo(0, 0);
 }
-// ========== МАСКА ТЕЛЕФОНА ==========
-function initPhoneMask() {
-    const phoneInput = document.getElementById('customer-phone');
-    if (!phoneInput) return;
-
-    phoneInput.addEventListener('focus', () => {
-        if (!phoneInput.value) {
-            phoneInput.value = '+7 (';
-        }
-    });
-
-    phoneInput.addEventListener('blur', () => {
-        // Если только "+7 (" — очищаем
-        if (phoneInput.value === '+7 (' || phoneInput.value === '+7') {
-            phoneInput.value = '';
-        }
-    });
-
-    phoneInput.addEventListener('input', (e) => {
-        let value = e.target.value.replace(/\D/g, ''); // только цифры
-
-        // Если начинается с 8 — меняем на 7
-        if (value.startsWith('8')) {
-            value = '7' + value.slice(1);
-        }
-
-        // Если не начинается с 7 — добавляем
-        if (value && !value.startsWith('7')) {
-            value = '7' + value;
-        }
-
-        // Максимум 11 цифр (7 + 10)
-        value = value.slice(0, 11);
-
-        // Форматируем
-        let formatted = '';
-        if (value.length > 0) {
-            formatted = '+7';
-        }
-        if (value.length > 1) {
-            formatted += ' (' + value.slice(1, 4);
-        }
-        if (value.length >= 5) {
-            formatted += ') ' + value.slice(4, 7);
-        }
-        if (value.length >= 8) {
-            formatted += '-' + value.slice(7, 9);
-        }
-        if (value.length >= 10) {
-            formatted += '-' + value.slice(9, 11);
-        }
-
-        e.target.value = formatted;
-    });
-
-    // Разрешаем только цифры и служебные клавиши
-    phoneInput.addEventListener('keypress', (e) => {
-        if (!/[0-9]/.test(e.key) && !['Backspace', 'Delete', 'Tab', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
-            e.preventDefault();
-        }
-    });
-}
-
-// Запускаем маску
-initPhoneMask();
 
 // ========== СТАРТ ==========
 initCheckout();
 updateCartCount();
+initPhoneMask();
