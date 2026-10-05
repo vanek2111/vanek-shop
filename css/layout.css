@@ -167,3 +167,94 @@ footer {
 .footer-links a:hover { color: var(--accent); }
 
 .footer-copy { color: var(--text-muted); font-size: 12px; }
+/* ============================================
+   БУРГЕР-МЕНЮ
+   ============================================ */
+
+.menu-toggle {
+    display: none;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s;
+}
+
+.menu-toggle:hover {
+    border-color: var(--border-hover);
+    background: var(--accent-glow);
+}
+
+.menu-toggle span {
+    display: block;
+    position: absolute;
+    left: 50%;
+    width: 16px;
+    height: 2px;
+    background: var(--text);
+    border-radius: 2px;
+    transform: translateX(-50%);
+    transition: all 0.3s ease;
+}
+
+.menu-toggle span:nth-child(1) { top: 11px; }
+.menu-toggle span:nth-child(2) { top: 17px; }
+.menu-toggle span:nth-child(3) { top: 23px; }
+
+.menu-toggle.active span:nth-child(1) {
+    top: 17px;
+    transform: translateX(-50%) rotate(45deg);
+}
+
+.menu-toggle.active span:nth-child(2) { opacity: 0; }
+
+.menu-toggle.active span:nth-child(3) {
+    top: 17px;
+    transform: translateX(-50%) rotate(-45deg);
+}
+
+/* Выпадающее меню */
+.mobile-menu {
+    position: fixed;
+    top: 57px;
+    left: 0;
+    right: 0;
+    background: var(--navbar-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    padding: 8px 24px 16px;
+    gap: 4px;
+    z-index: 99;
+    transform: translateY(-100%);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.mobile-menu.open {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.mobile-menu a {
+    padding: 14px 16px;
+    color: var(--text);
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 500;
+    border-radius: 8px;
+    transition: background 0.2s, color 0.2s;
+}
+
+.mobile-menu a:hover {
+    background: var(--accent-glow);
+    color: var(--accent);
+}
