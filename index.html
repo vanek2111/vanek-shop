@@ -8,10 +8,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/base.css">
-<link rel="stylesheet" href="css/layout.css">
-<link rel="stylesheet" href="css/components.css">
-<link rel="stylesheet" href="css/home.css">
-<link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/home.css">
+    <link rel="stylesheet" href="css/responsive.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         (function() {
@@ -56,9 +56,21 @@
                     </svg>
                     <span id="cart-count">0</span>
                 </a>
+                <button class="menu-toggle" id="menu-toggle" aria-label="Меню">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
             </div>
         </div>
     </header>
+
+    <nav class="mobile-menu" id="mobile-menu">
+        <a href="catalog.html">Каталог</a>
+        <a href="#reviews">Отзывы</a>
+        <a href="#features">Почему мы</a>
+        <a href="#contacts">Контакты</a>
+    </nav>
 
     <div class="topbar">
         <div class="container topbar-inner">
@@ -147,7 +159,7 @@
                 </div>
                 <a href="catalog.html" class="section-link">Все товары →</a>
             </div>
-            <div class="products-grid" id="hits-grid"></div>
+            <div class="products-grid products-grid-scroll" id="hits-grid"></div>
         </div>
     </section>
 
@@ -183,7 +195,7 @@
                 </div>
                 <a href="catalog.html" class="section-link">Все товары →</a>
             </div>
-            <div class="products-grid" id="new-grid"></div>
+            <div class="products-grid products-grid-scroll" id="new-grid"></div>
         </div>
     </section>
 
@@ -358,6 +370,23 @@
             document.documentElement.setAttribute('data-theme', next);
             localStorage.setItem('theme', next);
         });
+
+        const menuToggle = document.getElementById('menu-toggle');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        if (menuToggle && mobileMenu) {
+            menuToggle.addEventListener('click', () => {
+                menuToggle.classList.toggle('active');
+                mobileMenu.classList.toggle('open');
+            });
+
+            mobileMenu.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    menuToggle.classList.remove('active');
+                    mobileMenu.classList.remove('open');
+                });
+            });
+        }
     </script>
 </body>
 </html>
