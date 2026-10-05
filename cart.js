@@ -152,7 +152,7 @@ function renderCart() {
 }
 
 function checkout() {
-    alert('Страница оформления заказа появится позже. Корзина работает!');
+    window.location.href = 'checkout.html';
 }
 
 // ========== СТАРТ ==========
