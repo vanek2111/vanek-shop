@@ -264,6 +264,12 @@
                 msg.className = 'auth-message error';
                 return;
             }
+                // Обновляем заголовок сразу после сохранения
+    const greeting = document.querySelector('.account-greeting');
+    if (greeting && fullName) {
+        greeting.textContent = `Привет, ${fullName.split(' ')[0]}!`;
+    }
+
 
             msg.textContent = '✓ Сохранено';
             msg.className = 'auth-message success';
