@@ -130,6 +130,10 @@ async function handleLogin(e) {
 
     if (!email || !password) return showMessage('Заполните все поля');
 
+if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return showMessage('Введите корректный email');
+}
+
     setLoading(btn, true);
 
     const { data, error } = await db.auth.signInWithPassword({ email, password });
