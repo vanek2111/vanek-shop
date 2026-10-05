@@ -8,10 +8,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/base.css">
-<link rel="stylesheet" href="css/layout.css">
-<link rel="stylesheet" href="css/components.css">
-<link rel="stylesheet" href="css/cart.css">
-<link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/cart.css">
+    <link rel="stylesheet" href="css/responsive.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         (function() {
@@ -33,8 +33,9 @@
                 <span class="logo-text">Exo<em>Tech</em></span>
             </a>
             <nav>
-                <a href="index.html#catalog">Каталог</a>
-                <a href="index.html#about">О нас</a>
+                <a href="catalog.html">Каталог</a>
+                <a href="index.html#reviews">Отзывы</a>
+                <a href="index.html#features">Почему мы</a>
                 <a href="index.html#contacts">Контакты</a>
             </nav>
             <div class="navbar-actions">
@@ -55,15 +56,27 @@
                     </svg>
                     <span id="cart-count">0</span>
                 </a>
+                <button class="menu-toggle" id="menu-toggle" aria-label="Меню">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
             </div>
         </div>
     </header>
+
+    <nav class="mobile-menu" id="mobile-menu">
+        <a href="catalog.html">Каталог</a>
+        <a href="index.html#reviews">Отзывы</a>
+        <a href="index.html#features">Почему мы</a>
+        <a href="index.html#contacts">Контакты</a>
+    </nav>
 
     <main class="cart-page">
         <div class="container">
             <div class="cart-head">
                 <h1>Корзина</h1>
-                <a href="index.html#catalog" class="cart-continue">← Продолжить покупки</a>
+                <a href="catalog.html" class="cart-continue">← Продолжить покупки</a>
             </div>
             <div id="cart-content">
                 <p class="loading">Загрузка…</p>
@@ -71,7 +84,7 @@
         </div>
     </main>
 
-    <footer>
+    <footer id="contacts">
         <div class="container footer-inner">
             <div class="footer-brand">
                 <div class="logo">
@@ -85,8 +98,9 @@
                 <p>Электроника нового поколения</p>
             </div>
             <div class="footer-links">
-                <a href="index.html#catalog">Каталог</a>
-                <a href="index.html#about">О нас</a>
+                <a href="catalog.html">Каталог</a>
+                <a href="index.html#features">Почему мы</a>
+                <a href="index.html#reviews">Отзывы</a>
                 <a href="index.html#contacts">Контакты</a>
             </div>
             <div class="footer-copy">© 2026 ExoTech</div>
@@ -102,6 +116,23 @@
             document.documentElement.setAttribute('data-theme', next);
             localStorage.setItem('theme', next);
         });
+
+        const menuToggle = document.getElementById('menu-toggle');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        if (menuToggle && mobileMenu) {
+            menuToggle.addEventListener('click', () => {
+                menuToggle.classList.toggle('active');
+                mobileMenu.classList.toggle('open');
+            });
+
+            mobileMenu.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    menuToggle.classList.remove('active');
+                    mobileMenu.classList.remove('open');
+                });
+            });
+        }
     </script>
 </body>
 </html>
