@@ -3,7 +3,7 @@ const SUPABASE_URL = 'https://ytqxfykqiekphcpjrvon.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_zOXsiffHOAy8S693kYoL6g_CivX9ffr';
 
 const { createClient } = supabase;
-const db = createClient(SUPABASE_URL, SUPABASE_KEY);
+var db = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 window.db = db;  // ← глобальный db для всех модулей
 
