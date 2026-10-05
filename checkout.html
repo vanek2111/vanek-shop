@@ -43,6 +43,13 @@
                 <a href="index.html#contacts">Контакты</a>
             </nav>
             <div class="navbar-actions">
+                <a href="login.html" class="auth-btn" id="auth-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                    <span>Войти</span>
+                </a>
                 <button class="theme-toggle" id="theme-toggle" aria-label="Переключить тему">
                     <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <circle cx="12" cy="12" r="4"></circle>
@@ -74,6 +81,7 @@
         <a href="index.html#reviews">Отзывы</a>
         <a href="index.html#features">Почему мы</a>
         <a href="index.html#contacts">Контакты</a>
+        <a href="login.html" id="auth-btn-mobile">Войти</a>
     </nav>
 
     <main class="checkout-page">
@@ -92,7 +100,6 @@
                 <form class="checkout-form" id="checkout-form" novalidate>
                     <section class="checkout-section">
                         <h2>Контактные данные</h2>
-
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="customer-name">Имя и фамилия *</label>
@@ -100,7 +107,6 @@
                                 <span class="form-error" id="error-name"></span>
                             </div>
                         </div>
-
                         <div class="form-row form-row-2">
                             <div class="form-group">
                                 <label for="customer-phone">Телефон *</label>
@@ -117,7 +123,6 @@
 
                     <section class="checkout-section">
                         <h2>Адрес доставки</h2>
-
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="customer-city">Город *</label>
@@ -125,7 +130,6 @@
                                 <span class="form-error" id="error-city"></span>
                             </div>
                         </div>
-
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="customer-address">Адрес *</label>
@@ -133,7 +137,6 @@
                                 <span class="form-error" id="error-address"></span>
                             </div>
                         </div>
-
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="customer-comment">Комментарий к заказу</label>
@@ -144,7 +147,6 @@
 
                     <section class="checkout-section">
                         <h2>Способ оплаты</h2>
-
                         <div class="payment-options">
                             <label class="payment-option">
                                 <input type="radio" name="payment" value="card" checked>
@@ -204,6 +206,7 @@
     </footer>
 
     <script src="checkout.js"></script>
+    <script src="auth.js"></script>
     <script>
         const toggle = document.getElementById('theme-toggle');
         toggle.addEventListener('click', () => {
@@ -215,7 +218,6 @@
 
         const menuToggle = document.getElementById('menu-toggle');
         const mobileMenu = document.getElementById('mobile-menu');
-
         if (menuToggle && mobileMenu) {
             menuToggle.addEventListener('click', () => {
                 menuToggle.classList.toggle('active');
