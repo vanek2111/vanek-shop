@@ -253,3 +253,36 @@
     .hero h1 { font-size: 24px; }
     .topbar-item { font-size: 11px; }
 }
+/* ============================================
+   ФИНАЛЬНЫЙ ФИКС ТОПБАРА
+   ============================================ */
+
+@media (max-width: 768px) {
+    .topbar {
+        margin-top: 60px;
+        padding: 10px 0;
+    }
+
+    .topbar-inner {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        justify-content: flex-start !important;
+        gap: 6px !important;
+        padding: 0 !important;
+        overflow: visible !important;
+        flex-wrap: nowrap !important;
+    }
+
+    .topbar-item {
+        font-size: 12px !important;
+        white-space: normal !important;
+        width: 100%;
+    }
+
+    .topbar-item svg {
+        width: 12px !important;
+        height: 12px !important;
+        flex-shrink: 0;
+    }
+}
