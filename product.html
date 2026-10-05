@@ -8,10 +8,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/base.css">
-<link rel="stylesheet" href="css/layout.css">
-<link rel="stylesheet" href="css/components.css">
-<link rel="stylesheet" href="css/product.css">
-<link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/product.css">
+    <link rel="stylesheet" href="css/responsive.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         (function() {
@@ -22,7 +22,6 @@
 </head>
 <body>
 
-    <!-- ШАПКА -->
     <header class="navbar">
         <div class="container">
             <a href="index.html" class="logo">
@@ -34,8 +33,9 @@
                 <span class="logo-text">Exo<em>Tech</em></span>
             </a>
             <nav>
-                <a href="index.html#catalog">Каталог</a>
-                <a href="index.html#about">О нас</a>
+                <a href="catalog.html">Каталог</a>
+                <a href="index.html#reviews">Отзывы</a>
+                <a href="index.html#features">Почему мы</a>
                 <a href="index.html#contacts">Контакты</a>
             </nav>
             <div class="navbar-actions">
@@ -56,14 +56,25 @@
                     </svg>
                     <span id="cart-count">0</span>
                 </a>
+                <button class="menu-toggle" id="menu-toggle" aria-label="Меню">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
             </div>
         </div>
     </header>
 
-    <!-- ТОВАР -->
+    <nav class="mobile-menu" id="mobile-menu">
+        <a href="catalog.html">Каталог</a>
+        <a href="index.html#reviews">Отзывы</a>
+        <a href="index.html#features">Почему мы</a>
+        <a href="index.html#contacts">Контакты</a>
+    </nav>
+
     <main class="product-page">
         <div class="container">
-            <a href="index.html#catalog" class="back-link">
+            <a href="catalog.html" class="back-link">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M19 12H5M12 19l-7-7 7-7"></path>
                 </svg>
@@ -75,8 +86,7 @@
         </div>
     </main>
 
-    <!-- ФУТЕР -->
-    <footer>
+    <footer id="contacts">
         <div class="container footer-inner">
             <div class="footer-brand">
                 <div class="logo">
@@ -90,8 +100,9 @@
                 <p>Электроника нового поколения</p>
             </div>
             <div class="footer-links">
-                <a href="index.html#catalog">Каталог</a>
-                <a href="index.html#about">О нас</a>
+                <a href="catalog.html">Каталог</a>
+                <a href="index.html#features">Почему мы</a>
+                <a href="index.html#reviews">Отзывы</a>
                 <a href="index.html#contacts">Контакты</a>
             </div>
             <div class="footer-copy">© 2026 ExoTech</div>
@@ -107,6 +118,23 @@
             document.documentElement.setAttribute('data-theme', next);
             localStorage.setItem('theme', next);
         });
+
+        const menuToggle = document.getElementById('menu-toggle');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        if (menuToggle && mobileMenu) {
+            menuToggle.addEventListener('click', () => {
+                menuToggle.classList.toggle('active');
+                mobileMenu.classList.toggle('open');
+            });
+
+            mobileMenu.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    menuToggle.classList.remove('active');
+                    mobileMenu.classList.remove('open');
+                });
+            });
+        }
     </script>
 </body>
 </html>
