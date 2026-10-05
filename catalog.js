@@ -31,7 +31,7 @@ const categoryIcons = {
     'Комплектующие': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="14" x2="23" y2="14"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="14" x2="4" y2="14"></line></svg>'
 };
 
-// ========== ИКОНКА ПО НАЗВАНИЮ ТОВАРА ==========
+// ========== ИКОНКА ПО НАЗВАНИЮ ==========
 function getIcon(product) {
     const category = product.category;
     const name = (product.name || '').toLowerCase();
@@ -40,15 +40,15 @@ function getIcon(product) {
         return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="6"></rect><line x1="12" y1="8" x2="12" y2="11"></line></svg>';
     }
     if (name.includes('клавиатура') || name.includes('keyboard')) {
-        return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"></rect><line x1="6" y1="10" x2="6" y2="10"></line><line x1="10" y1="10" x2="10" y2="10"></line><line x1="14" y1="10" x2="14" y2="10"></line><line x1="18" y1="10" x2="18" y2="10"></line><line x1="7" y1="14" x2="17" y2="14"></line></svg>';
+        return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"></rect><line x1="6" y1="10" x2="6.01" y2="10"></line><line x1="10" y1="10" x2="10.01" y2="10"></line><line x1="14" y1="10" x2="14.01" y2="10"></line><line x1="18" y1="10" x2="18.01" y2="10"></line><line x1="7" y1="14" x2="17" y2="14"></line></svg>';
     }
-    if (name.includes('наушник') || name.includes('headphone') || name.includes('airpods')) {
+    if (name.includes('наушник') || name.includes('headphone') || name.includes('airpods') || name.includes('jbl') || name.includes('hyperx cloud')) {
         return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"></path><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"></path></svg>';
     }
     if (name.includes('ssd') || name.includes('память') || name.includes('ram') || name.includes('ddr')) {
         return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"></rect><rect x="6" y="10" width="3" height="4"></rect><rect x="11" y="10" width="3" height="4"></rect><rect x="16" y="10" width="3" height="4"></rect></svg>';
     }
-    if (name.includes('монитор') || name.includes('monitor') || name.includes('odyssey')) {
+    if (name.includes('монитор') || name.includes('monitor') || name.includes('odyssey') || name.includes('rog swift')) {
         return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>';
     }
     if (name.includes('роутер') || name.includes('router') || name.includes('tp-link') || name.includes('rt-ax')) {
