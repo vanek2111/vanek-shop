@@ -35,20 +35,40 @@ async function updateHeaderAuth() {
     const authBtn = document.getElementById('auth-btn');
     const authBtnMobile = document.getElementById('auth-btn-mobile');
 
+    if (!authBtn) return;
+
     if (session && session.user) {
-        // Залогинен
-        const fullName = session.user.user_metadata?.full_name || session.user.email.split('@')[0];
+        // Залогинен — берём имя из profiles (самое свежее)
+        let fullName = session.user.user_metadata?.full_name || session.user.email.split('@')[0];
+
+        try {
+            const { data: profile } = await db
+                .from('profiles')
+                .select('full_name')
+                .eq('id', session.user.id)
+                .single();
+
+            if (profile && profile.full_name) {
+                fullName = profile.full_name;
+            }
+        } catch (e) {
+            console.warn('Не удалось загрузить профиль:', e);
+        }
+
+        // В шапке — только первое слово
         const firstName = fullName.split(' ')[0];
+
+        // Иконка юзера (SVG)
+        const iconSvg = `
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+        `;
 
         if (authBtn) {
             authBtn.href = 'account.html';
-            authBtn.innerHTML = `
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                    <circle cx="12" cy="7" r="4"></circle>
-                </svg>
-                <span>${firstName}</span>
-            `;
+            authBtn.innerHTML = `${iconSvg}<span>${firstName}</span>`;
             authBtn.classList.add('auth-logged');
         }
         if (authBtnMobile) {
@@ -57,15 +77,16 @@ async function updateHeaderAuth() {
         }
     } else {
         // Не залогинен
+        const iconSvg = `
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+        `;
+
         if (authBtn) {
             authBtn.href = 'login.html';
-            authBtn.innerHTML = `
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                    <circle cx="12" cy="7" r="4"></circle>
-                </svg>
-                <span>Войти</span>
-            `;
+            authBtn.innerHTML = `${iconSvg}<span>Войти</span>`;
             authBtn.classList.remove('auth-logged');
         }
         if (authBtnMobile) {
@@ -112,7 +133,18 @@ async function handleRegister(e) {
         return;
     }
 
-    // Успех
+    // На всякий случай обновляем профиль (если триггер не сработал)
+    if (data.user) {
+        try {
+            await db.from('profiles').upsert({
+                id: data.user.id,
+                full_name: name
+            });
+        } catch (e) {
+            console.warn('Профиль не обновился:', e);
+        }
+    }
+
     showMessage('Аккаунт создан! Перенаправляем...', 'success');
     setTimeout(() => {
         window.location.href = 'account.html';
@@ -129,10 +161,7 @@ async function handleLogin(e) {
     const btn = document.getElementById('login-submit');
 
     if (!email || !password) return showMessage('Заполните все поля');
-
-if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    return showMessage('Введите корректный email');
-}
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return showMessage('Введите корректный email');
 
     setLoading(btn, true);
 
@@ -144,7 +173,6 @@ if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
         return;
     }
 
-    // Успех
     window.location.href = 'account.html';
 }
 
@@ -171,6 +199,11 @@ async function redirectIfLoggedIn() {
         window.location.href = 'account.html';
     }
 }
+
+// ========== АВТООБНОВЛЕНИЕ ШАПКИ ПРИ СМЕНЕ СЕССИИ ==========
+db.auth.onAuthStateChange((event, session) => {
+    updateHeaderAuth();
+});
 
 // ========== СТАРТ ==========
 document.addEventListener('DOMContentLoaded', () => {
