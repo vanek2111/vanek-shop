@@ -5,15 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Товар — ExoTech</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
-<link rel="apple-touch-icon" href="favicon.svg">
+    <link rel="apple-touch-icon" href="favicon.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/base.css">
     <link rel="stylesheet" href="css/layout.css">
     <link rel="stylesheet" href="css/components.css">
     <link rel="stylesheet" href="css/product.css">
     <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/theme.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         (function() {
@@ -28,11 +29,12 @@
         <div class="container">
             <a href="index.html" class="logo">
                 <span class="logo-mark">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
+                    <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="32" height="32" rx="6" fill="currentColor"/>
+                        <path d="M10 10L22 22M22 10L10 22" stroke="#16161a" stroke-width="3" stroke-linecap="square"/>
                     </svg>
                 </span>
-                <span class="logo-text">Exo<em>Tech</em></span>
+                <span class="logo-text">EXO<em>TECH</em></span>
             </a>
             <nav>
                 <a href="catalog.html">Каталог</a>
@@ -93,13 +95,14 @@
             <div class="footer-brand">
                 <div class="logo">
                     <span class="logo-mark">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
+                        <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="32" height="32" rx="6" fill="currentColor"/>
+                            <path d="M10 10L22 22M22 10L10 22" stroke="#16161a" stroke-width="3" stroke-linecap="square"/>
                         </svg>
                     </span>
-                    <span class="logo-text">Exo<em>Tech</em></span>
+                    <span class="logo-text">EXO<em>TECH</em></span>
                 </div>
-                <p>Электроника нового поколения</p>
+                <p>Периферия для побед</p>
             </div>
             <div class="footer-links">
                 <a href="catalog.html">Каталог</a>
@@ -129,7 +132,6 @@
                 menuToggle.classList.toggle('active');
                 mobileMenu.classList.toggle('open');
             });
-
             mobileMenu.querySelectorAll('a').forEach(link => {
                 link.addEventListener('click', () => {
                     menuToggle.classList.remove('active');
