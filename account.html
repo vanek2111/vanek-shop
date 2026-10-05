@@ -118,6 +118,23 @@
 
     <script src="auth.js"></script>
     <script>
+        // ========== УТИЛИТЫ ФОРМАТИРОВАНИЯ ТЕЛЕФОНА ==========
+        function formatPhone(digits) {
+            digits = digits.replace(/\D/g, '');
+            if (digits.startsWith('8')) digits = '7' + digits.slice(1);
+            if (digits && !digits.startsWith('7')) digits = '7' + digits;
+            digits = digits.slice(0, 11);
+
+            let formatted = '';
+            if (digits.length > 0) formatted = '+7';
+            if (digits.length > 1) formatted += ' (' + digits.slice(1, 4);
+            if (digits.length >= 5) formatted += ') ' + digits.slice(4, 7);
+            if (digits.length >= 8) formatted += '-' + digits.slice(7, 9);
+            if (digits.length >= 10) formatted += '-' + digits.slice(9, 11);
+
+            return formatted;
+        }
+
         // ========== ЗАГРУЗКА ЛК ==========
         async function initAccount() {
             const session = await requireAuth();
@@ -127,7 +144,6 @@
             const userId = user.id;
             const email = user.email;
 
-            // Загружаем профиль и заказы
             const [profileRes, ordersRes] = await Promise.all([
                 db.from('profiles').select('*').eq('id', userId).single(),
                 db.from('orders').select('*').eq('user_id', userId).order('created_at', { ascending: false })
@@ -136,7 +152,6 @@
             const profile = profileRes.data || {};
             const orders = ordersRes.data || [];
 
-            // Имя: сначала из profile, потом из metadata, потом из email
             const fullName = profile.full_name
                 || user.user_metadata?.full_name
                 || email.split('@')[0];
@@ -189,6 +204,9 @@
                     `;
                 }).join('');
 
+            // Форматируем телефон из профиля
+            const formattedPhone = profile.phone ? formatPhone(profile.phone) : '';
+
             container.innerHTML = `
                 <div class="account-head">
                     <div>
@@ -215,7 +233,7 @@
                             </div>
                             <div class="auth-field">
                                 <label for="profile-phone">Телефон</label>
-                                <input type="tel" id="profile-phone" value="${profile.phone || ''}" placeholder="+7 (999) 123-45-67">
+                                <input type="tel" id="profile-phone" value="${formattedPhone}" placeholder="+7 (999) 123-45-67" maxlength="18">
                             </div>
                             <div class="auth-field">
                                 <label for="profile-city">Город</label>
@@ -233,6 +251,37 @@
             `;
 
             document.getElementById('profile-form').addEventListener('submit', saveProfile);
+
+            // Навешиваем маску
+            initProfilePhoneMask();
+        }
+
+        // ========== МАСКА ТЕЛЕФОНА ==========
+        function initProfilePhoneMask() {
+            const phoneInput = document.getElementById('profile-phone');
+            if (!phoneInput) return;
+
+            phoneInput.addEventListener('focus', () => {
+                if (!phoneInput.value) {
+                    phoneInput.value = '+7 (';
+                }
+            });
+
+            phoneInput.addEventListener('blur', () => {
+                if (phoneInput.value === '+7 (' || phoneInput.value === '+7') {
+                    phoneInput.value = '';
+                }
+            });
+
+            phoneInput.addEventListener('input', (e) => {
+                e.target.value = formatPhone(e.target.value);
+            });
+
+            phoneInput.addEventListener('keypress', (e) => {
+                if (!/[0-9]/.test(e.key) && !['Backspace', 'Delete', 'Tab', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+                    e.preventDefault();
+                }
+            });
         }
 
         // ========== СОХРАНЕНИЕ ПРОФИЛЯ ==========
@@ -268,13 +317,11 @@
                 return;
             }
 
-            // Обновляем заголовок сразу после сохранения
             const greeting = document.querySelector('.account-greeting');
             if (greeting && fullName) {
                 greeting.textContent = `Привет, ${fullName.split(' ')[0]}!`;
             }
 
-            // Обновляем кнопку в шапке
             await updateHeaderAuth();
 
             msg.textContent = '✓ Сохранено';
@@ -286,12 +333,14 @@
 
         // ========== ТЕМА ==========
         const toggle = document.getElementById('theme-toggle');
-        toggle.addEventListener('click', () => {
-            const current = document.documentElement.getAttribute('data-theme');
-            const next = current === 'light' ? 'dark' : 'light';
-            document.documentElement.setAttribute('data-theme', next);
-            localStorage.setItem('theme', next);
-        });
+        if (toggle) {
+            toggle.addEventListener('click', () => {
+                const current = document.documentElement.getAttribute('data-theme');
+                const next = current === 'light' ? 'dark' : 'light';
+                document.documentElement.setAttribute('data-theme', next);
+                localStorage.setItem('theme', next);
+            });
+        }
 
         // ========== БУРГЕР ==========
         const menuToggle = document.getElementById('menu-toggle');
