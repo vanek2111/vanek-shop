@@ -6,8 +6,6 @@ if (typeof window.db === 'undefined') {
     );
 }
 var db = window.db;
-}
-const db = window.db;
 
 // ========== ХЕЛПЕРЫ ==========
 function showMessage(text, type = 'error') {
