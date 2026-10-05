@@ -4,6 +4,9 @@ const SUPABASE_KEY = 'sb_publishable_zOXsiffHOAy8S693kYoL6g_CivX9ffr';
 
 const { createClient } = supabase;
 const db = createClient(SUPABASE_URL, SUPABASE_KEY);
+window.db = db;   
+const { createClient } = supabase;
+const db = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // ========== ИКОНКИ ПО КАТЕГОРИЯМ ==========
 const categoryIcons = {
