@@ -452,3 +452,58 @@
         display: none;   /* на мобилке только иконка */
     }
 }
+/* ============================================
+   ФИКС КНОПКИ «ВОЙТИ» В ШАПКЕ
+   ============================================ */
+
+.auth-btn,
+.auth-btn:visited,
+.auth-btn:link {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    padding: 9px 14px !important;
+    background: transparent !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 6px !important;
+    color: var(--text) !important;
+    text-decoration: none !important;
+    font-family: inherit !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    line-height: 1 !important;
+    text-transform: none !important;
+    letter-spacing: 0 !important;
+    transition: all 0.2s !important;
+    white-space: nowrap !important;
+}
+
+.auth-btn:hover {
+    border-color: var(--accent) !important;
+    color: var(--accent) !important;
+    background: rgba(200, 255, 0, 0.05) !important;
+}
+
+.auth-btn svg {
+    flex-shrink: 0 !important;
+    color: currentColor !important;
+    stroke: currentColor !important;
+}
+
+.auth-btn span {
+    color: inherit !important;
+}
+
+.auth-btn.auth-logged {
+    border-color: var(--accent) !important;
+    color: var(--accent) !important;
+}
+
+@media (max-width: 768px) {
+    .auth-btn {
+        padding: 8px 10px !important;
+    }
+    .auth-btn span {
+        display: none !important;
+    }
+}
