@@ -2,15 +2,17 @@
    RESPONSIVE — все медиа-запросы
    ============================================ */
 
-/* -------- Планшеты (900px и меньше) -------- */
+/* ============================================
+   ПЛАНШЕТЫ И МОБИЛЬНЫЕ (до 900px)
+   ============================================ */
 @media (max-width: 900px) {
-    /* Каталог — сайдбар превращается в выезжающую панель */
+
+    /* -------- Каталог: фильтры в выезжающей панели -------- */
     .catalog-layout {
         grid-template-columns: 1fr;
         gap: 0;
     }
 
-    /* Сайдбар — выезжающая панель снизу */
     .filters-sidebar {
         position: fixed;
         bottom: 0;
@@ -32,23 +34,28 @@
         transform: translateY(0);
     }
 
-    /* Показываем элементы панели */
     .filters-mobile-head { display: flex; }
     .filters-apply-btn { display: block; }
     .filters-overlay { display: block; }
     .filters-open-btn { display: inline-flex; }
 
-    /* Остальные страницы */
+    /* -------- Другие страницы -------- */
     .cart-layout { grid-template-columns: 1fr; }
     .cart-summary { position: static; }
     .product-detail { grid-template-columns: 1fr; gap: 32px; }
 }
 
-/* -------- Мобильные (768px и меньше) -------- */
+/* ============================================
+   МОБИЛЬНЫЕ (до 768px)
+   ============================================ */
 @media (max-width: 768px) {
+
+    /* -------- Контейнер -------- */
     .container { padding: 0 16px; }
 
-    /* -------- Шапка -------- */
+    /* ============================================
+       ШАПКА
+       ============================================ */
     .navbar { padding: 12px 0; }
     .navbar nav { display: none; }
     .menu-toggle { display: block; }
@@ -56,32 +63,49 @@
     .logo-mark { width: 24px; height: 24px; }
     .cart-btn { padding: 8px 12px; font-size: 13px; }
 
-    /* -------- Топбар — фикс обрезки -------- */
+    /* ============================================
+       ТОПБАР — вертикально, с отступами от краёв
+       ============================================ */
     .topbar {
         margin-top: 60px;
         padding: 10px 0;
     }
 
+    /* ВАЖНО: padding у .container внутри .topbar */
+    .topbar .container {
+        padding: 0 16px !important;
+    }
+
     .topbar-inner {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 6px;
-        padding: 0;
-        overflow: visible;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: stretch !important;
+        justify-content: flex-start !important;
+        gap: 8px !important;
+        padding: 0 !important;
+        overflow: visible !important;
+        flex-wrap: nowrap !important;
     }
 
     .topbar-item {
-        font-size: 12px;
-        white-space: normal;
+        display: flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+        width: 100% !important;
+        padding: 4px 0 !important;
+        font-size: 12px !important;
+        white-space: normal !important;
     }
 
     .topbar-item svg {
-        width: 12px;
-        height: 12px;
+        width: 14px !important;
+        height: 14px !important;
+        flex-shrink: 0;
     }
 
-    /* -------- Hero -------- */
+    /* ============================================
+       HERO
+       ============================================ */
     .hero { padding: 40px 0 32px; }
     .hero h1 { font-size: 28px; }
     .hero p { font-size: 14px; margin-bottom: 20px; }
@@ -102,7 +126,9 @@
     .hero-stats strong { font-size: 18px; }
     .hero-stats span { font-size: 10px; }
 
-    /* -------- Секции -------- */
+    /* ============================================
+       СЕКЦИИ
+       ============================================ */
     section { padding: 36px 0; }
 
     .section-head { margin-bottom: 28px; }
@@ -118,21 +144,21 @@
 
     .section-head-row h2 { font-size: 22px; }
 
-    /* -------- Категории -------- */
+    /* ============================================
+       КАТЕГОРИИ
+       ============================================ */
     .categories-grid {
         grid-template-columns: repeat(2, 1fr);
         gap: 10px;
     }
 
-    .category-tile {
-        padding: 16px 12px;
-        gap: 8px;
-    }
-
+    .category-tile { padding: 16px 12px; gap: 8px; }
     .category-tile svg { width: 26px; height: 26px; }
     .category-tile span { font-size: 12px; }
 
-    /* -------- Товары -------- */
+    /* ============================================
+       ТОВАРЫ
+       ============================================ */
     .products-grid {
         grid-template-columns: repeat(2, 1fr);
         gap: 12px;
@@ -147,7 +173,9 @@
     .product-btn { padding: 9px; font-size: 12px; }
     .product-badge { font-size: 9px; padding: 3px 7px; top: 8px; left: 8px; }
 
-    /* -------- Хиты / Новинки — горизонтальный скролл -------- */
+    /* ============================================
+       ХИТЫ / НОВИНКИ — горизонтальный скролл
+       ============================================ */
     .products-grid-scroll {
         display: flex !important;
         flex-wrap: nowrap;
@@ -175,14 +203,18 @@
     .products-grid-scroll .product-price { font-size: 15px; margin-bottom: 6px; }
     .products-grid-scroll .product-btn { padding: 8px; font-size: 11px; }
 
-    /* -------- CTA -------- */
+    /* ============================================
+       CTA
+       ============================================ */
     .cta-box { padding: 32px 20px; }
     .cta-box h2 { font-size: 22px; }
     .cta-form { flex-direction: column; }
     .cta-form input,
     .cta-form button { width: 100%; }
 
-    /* -------- Отзывы, бренды, фичи -------- */
+    /* ============================================
+       ОТЗЫВЫ / БРЕНДЫ / ФИЧИ
+       ============================================ */
     .reviews-grid { grid-template-columns: 1fr; gap: 12px; }
     .review-card { padding: 18px; }
 
@@ -192,14 +224,18 @@
     .features-grid { grid-template-columns: 1fr; gap: 12px; }
     .feature-card { padding: 20px; }
 
-    /* -------- Каталог -------- */
+    /* ============================================
+       КАТАЛОГ
+       ============================================ */
     .catalog-hero { padding: 100px 0 24px; }
     .catalog-hero h1 { font-size: 26px; }
     .catalog-page { padding: 24px 0 60px; }
     .catalog-toolbar { flex-direction: column; align-items: stretch; gap: 10px; }
     .sort-select { width: 100%; }
 
-    /* -------- Товар -------- */
+    /* ============================================
+       ТОВАР
+       ============================================ */
     .product-page { padding: 100px 0 60px; }
     .product-detail { gap: 20px; }
     .product-detail-image svg { width: 80px; height: 80px; }
@@ -214,13 +250,17 @@
     .specs-row dt,
     .specs-row dd { font-size: 13px; }
 
-    /* -------- Корзина -------- */
+    /* ============================================
+       КОРЗИНА
+       ============================================ */
     .cart-page { padding: 100px 0 60px; }
     .cart-head { flex-direction: column; align-items: flex-start; gap: 10px; }
     .cart-head h1 { font-size: 26px; }
     .cart-summary { padding: 18px; }
 
-    /* -------- Футер -------- */
+    /* ============================================
+       ФУТЕР
+       ============================================ */
     .footer-inner {
         flex-direction: column;
         text-align: center;
@@ -230,7 +270,9 @@
     .footer-links { flex-wrap: wrap; justify-content: center; }
 }
 
-/* -------- Маленькие телефоны (600px и меньше) -------- */
+/* ============================================
+   МАЛЕНЬКИЕ ТЕЛЕФОНЫ (до 600px)
+   ============================================ */
 @media (max-width: 600px) {
     .cart-item {
         grid-template-columns: 64px 1fr auto;
@@ -247,52 +289,11 @@
     .cart-item-price { grid-area: price; text-align: right; }
 }
 
-/* -------- Очень маленькие (400px и меньше) -------- */
+/* ============================================
+   ОЧЕНЬ МАЛЕНЬКИЕ (до 400px)
+   ============================================ */
 @media (max-width: 400px) {
     .products-grid { grid-template-columns: 1fr; }
     .hero h1 { font-size: 24px; }
-    .topbar-item { font-size: 11px; }
-}
-/* ============================================
-   ФИНАЛЬНЫЙ ФИКС ТОПБАРА
-   ============================================ */
-
-@media (max-width: 768px) {
-    .topbar {
-        margin-top: 60px;
-        padding: 10px 0;
-    }
-
-    .topbar-inner {
-        display: flex !important;
-        flex-direction: column !important;
-        align-items: flex-start !important;
-        justify-content: flex-start !important;
-        gap: 6px !important;
-        padding: 0 !important;
-        overflow: visible !important;
-        flex-wrap: nowrap !important;
-    }
-
-    .topbar-item {
-        font-size: 12px !important;
-        white-space: normal !important;
-        width: 100%;
-    }
-
-    .topbar-item svg {
-        width: 12px !important;
-        height: 12px !important;
-        flex-shrink: 0;
-    }
-}
-@media (max-width: 768px) {
-    .topbar-inner {
-        padding: 0 16px !important;
-        gap: 8px !important;
-    }
-
-    .topbar-item {
-        padding: 4px 0 !important;
-    }
+    .topbar-item { font-size: 11px !important; }
 }
