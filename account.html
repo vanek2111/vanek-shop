@@ -1,1 +1,299 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Личный кабинет — ExoTech</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="apple-touch-icon" href="favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/auth.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/theme.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        (function() {
+            const saved = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', saved);
+        })();
+    </script>
+</head>
+<body>
 
+    <header class="navbar">
+        <div class="container">
+            <a href="index.html" class="logo">
+                <span class="logo-mark">
+                    <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="32" height="32" rx="6" fill="currentColor"/>
+                        <path d="M10 10L22 22M22 10L10 22" stroke="#16161a" stroke-width="3" stroke-linecap="square"/>
+                    </svg>
+                </span>
+                <span class="logo-text">EXO<em>TECH</em></span>
+            </a>
+            <nav>
+                <a href="catalog.html">Каталог</a>
+                <a href="index.html#reviews">Отзывы</a>
+                <a href="index.html#features">Почему мы</a>
+                <a href="index.html#contacts">Контакты</a>
+            </nav>
+            <div class="navbar-actions">
+                <a href="account.html" class="auth-btn" id="auth-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                    <span>Войти</span>
+                </a>
+                <button class="theme-toggle" id="theme-toggle" aria-label="Переключить тему">
+                    <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="4"></circle>
+                        <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path>
+                    </svg>
+                    <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                </button>
+                <a href="cart.html" class="cart-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="9" cy="21" r="1"></circle>
+                        <circle cx="20" cy="21" r="1"></circle>
+                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                    </svg>
+                    <span id="cart-count">0</span>
+                </a>
+                <button class="menu-toggle" id="menu-toggle" aria-label="Меню">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <nav class="mobile-menu" id="mobile-menu">
+        <a href="catalog.html">Каталог</a>
+        <a href="index.html#reviews">Отзывы</a>
+        <a href="index.html#features">Почему мы</a>
+        <a href="index.html#contacts">Контакты</a>
+        <a href="account.html" id="auth-btn-mobile">Войти</a>
+    </nav>
+
+    <main class="account-page">
+        <div class="container">
+            <div id="account-content">
+                <p class="auth-loading">Загрузка...</p>
+            </div>
+        </div>
+    </main>
+
+    <footer id="contacts">
+        <div class="container footer-inner">
+            <div class="footer-brand">
+                <div class="logo">
+                    <span class="logo-mark">
+                        <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="32" height="32" rx="6" fill="currentColor"/>
+                            <path d="M10 10L22 22M22 10L10 22" stroke="#16161a" stroke-width="3" stroke-linecap="square"/>
+                        </svg>
+                    </span>
+                    <span class="logo-text">EXO<em>TECH</em></span>
+                </div>
+                <p>Периферия для побед</p>
+            </div>
+            <div class="footer-links">
+                <a href="catalog.html">Каталог</a>
+                <a href="index.html#features">Почему мы</a>
+                <a href="index.html#reviews">Отзывы</a>
+                <a href="index.html#contacts">Контакты</a>
+            </div>
+            <div class="footer-copy">© 2026 ExoTech</div>
+        </div>
+    </footer>
+
+    <script src="auth.js"></script>
+    <script>
+        // Защита страницы + загрузка данных
+        async function initAccount() {
+            const session = await requireAuth();
+            if (!session) return;
+
+            const user = session.user;
+            const userId = user.id;
+            const fullName = user.user_metadata?.full_name || user.email.split('@')[0];
+            const email = user.email;
+
+            // Загружаем профиль и заказы
+            const [profileRes, ordersRes] = await Promise.all([
+                db.from('profiles').select('*').eq('id', userId).single(),
+                db.from('orders').select('*').eq('user_id', userId).order('created_at', { ascending: false })
+            ]);
+
+            const profile = profileRes.data || {};
+            const orders = ordersRes.data || [];
+
+            renderAccount({ user, profile, orders, fullName, email });
+        }
+
+        function renderAccount({ profile, orders, fullName, email }) {
+            const container = document.getElementById('account-content');
+
+            const ordersHtml = orders.length === 0
+                ? `
+                    <div class="account-empty">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="9" cy="21" r="1"></circle>
+                            <circle cx="20" cy="21" r="1"></circle>
+                            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                        </svg>
+                        <p>У вас пока нет заказов</p>
+                        <a href="catalog.html" class="btn btn-primary">Перейти в каталог</a>
+                    </div>
+                `
+                : orders.map(order => {
+                    const date = new Date(order.created_at).toLocaleDateString('ru-RU', {
+                        day: '2-digit', month: '2-digit', year: 'numeric'
+                    });
+                    const itemsText = (order.items || []).map(i => `${i.name} × ${i.qty}`).join(', ');
+                    const statusLabels = {
+                        'new': 'Новый',
+                        'processing': 'В обработке',
+                        'shipped': 'Отправлен',
+                        'delivered': 'Доставлен'
+                    };
+                    const status = statusLabels[order.status] || order.status;
+
+                    return `
+                        <div class="order-item">
+                            <div class="order-item-head">
+                                <div>
+                                    <div class="order-item-number">Заказ №${order.id}</div>
+                                    <div class="order-item-date">${date}</div>
+                                </div>
+                                <span class="order-item-status status-${order.status}">${status}</span>
+                                <div class="order-item-total">${order.total.toLocaleString()}</div>
+                            </div>
+                            <div class="order-item-items">${itemsText}</div>
+                        </div>
+                    `;
+                }).join('');
+
+            container.innerHTML = `
+                <div class="account-head">
+                    <div>
+                        <h1 class="account-greeting">Привет, ${fullName.split(' ')[0]}!</h1>
+                        <p class="account-email">${email}</p>
+                    </div>
+                    <button class="account-logout" onclick="handleLogout()">Выйти</button>
+                </div>
+
+                <div class="account-layout">
+                    <section class="account-section">
+                        <h2>История заказов</h2>
+                        <div class="orders-list">
+                            ${ordersHtml}
+                        </div>
+                    </section>
+
+                    <aside class="account-section">
+                        <h2>Мои данные</h2>
+                        <form class="profile-form" id="profile-form">
+                            <div class="auth-field">
+                                <label for="profile-name">Имя и фамилия</label>
+                                <input type="text" id="profile-name" value="${profile.full_name || fullName}" placeholder="Иван Иванов">
+                            </div>
+                            <div class="auth-field">
+                                <label for="profile-phone">Телефон</label>
+                                <input type="tel" id="profile-phone" value="${profile.phone || ''}" placeholder="+7 (999) 123-45-67">
+                            </div>
+                            <div class="auth-field">
+                                <label for="profile-city">Город</label>
+                                <input type="text" id="profile-city" value="${profile.city || ''}" placeholder="Москва">
+                            </div>
+                            <div class="auth-field">
+                                <label for="profile-address">Адрес</label>
+                                <input type="text" id="profile-address" value="${profile.address || ''}" placeholder="ул. Ленина, д. 1">
+                            </div>
+                            <div class="auth-message" id="profile-message"></div>
+                            <button type="submit" class="auth-submit" id="profile-submit">Сохранить</button>
+                        </form>
+                    </aside>
+                </div>
+            `;
+
+            document.getElementById('profile-form').addEventListener('submit', saveProfile);
+        }
+
+        async function saveProfile(e) {
+            e.preventDefault();
+            const btn = document.getElementById('profile-submit');
+            const msg = document.getElementById('profile-message');
+
+            const fullName = document.getElementById('profile-name').value.trim();
+            const phone = document.getElementById('profile-phone').value.trim();
+            const city = document.getElementById('profile-city').value.trim();
+            const address = document.getElementById('profile-address').value.trim();
+
+            btn.disabled = true;
+            btn.textContent = 'Сохранение...';
+
+            const { data: { session } } = await db.auth.getSession();
+
+            const { error } = await db.from('profiles').upsert({
+                id: session.user.id,
+                full_name: fullName,
+                phone: phone,
+                city: city,
+                address: address
+            });
+
+            btn.disabled = false;
+            btn.textContent = 'Сохранить';
+
+            if (error) {
+                msg.textContent = 'Ошибка сохранения';
+                msg.className = 'auth-message error';
+                return;
+            }
+
+            msg.textContent = '✓ Сохранено';
+            msg.className = 'auth-message success';
+            setTimeout(() => {
+                msg.className = 'auth-message';
+            }, 2000);
+        }
+
+        initAccount();
+
+        // Тема
+        const toggle = document.getElementById('theme-toggle');
+        toggle.addEventListener('click', () => {
+            const current = document.documentElement.getAttribute('data-theme');
+            const next = current === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+        });
+
+        // Бургер
+        const menuToggle = document.getElementById('menu-toggle');
+        const mobileMenu = document.getElementById('mobile-menu');
+        if (menuToggle && mobileMenu) {
+            menuToggle.addEventListener('click', () => {
+                menuToggle.classList.toggle('active');
+                mobileMenu.classList.toggle('open');
+            });
+            mobileMenu.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    menuToggle.classList.remove('active');
+                    mobileMenu.classList.remove('open');
+                });
+            });
+        }
+    </script>
+</body>
+</html>
