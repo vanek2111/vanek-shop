@@ -174,17 +174,22 @@ async function submitOrder() {
 
     const total = items.reduce((sum, item) => sum + item.price * item.qty, 0);
 
-    const order = {
-        customer_name: document.getElementById('customer-name').value.trim(),
-        customer_phone: document.getElementById('customer-phone').value.trim(),
-        customer_email: document.getElementById('customer-email').value.trim(),
-        city: document.getElementById('customer-city').value.trim(),
-        address: document.getElementById('customer-address').value.trim(),
-        comment: document.getElementById('customer-comment').value.trim() || null,
-        payment_method: document.querySelector('input[name="payment"]:checked').value,
-        items: items,
-        total: total
-    };
+    // Получаем текущего пользователя (если залогинен)
+const { data: { session } } = await db.auth.getSession();
+const userId = session?.user?.id || null;
+
+const order = {
+    customer_name: document.getElementById('customer-name').value.trim(),
+    customer_phone: document.getElementById('customer-phone').value.trim(),
+    customer_email: document.getElementById('customer-email').value.trim(),
+    city: document.getElementById('customer-city').value.trim(),
+    address: document.getElementById('customer-address').value.trim(),
+    comment: document.getElementById('customer-comment').value.trim() || null,
+    payment_method: document.querySelector('input[name="payment"]:checked').value,
+    items: items,
+    total: total,
+    user_id: userId     // ← НОВОЕ ПОЛЕ
+};
 
     const { data, error } = await db.from('orders').insert(order).select().single();
 
