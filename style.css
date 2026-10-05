@@ -1934,3 +1934,90 @@ footer {
 .filters-sidebar .filters-brands {
     width: 100%;
 }
+/* ============================================
+   ФИНАЛЬНЫЕ ФИКСЫ КАТАЛОГА
+   ============================================ */
+
+/* -------- Сетка: 4-5 в ряд на широких -------- */
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+    align-items: stretch;
+}
+
+.product-card {
+    height: 100%;
+}
+
+/* -------- Сайдбар: не выше экрана + 1 скролл -------- */
+.filters-sidebar {
+    position: sticky;
+    top: 90px;
+    max-height: calc(100vh - 120px);
+    overflow-y: auto;
+    scrollbar-gutter: stable;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(139, 92, 246, 0.3) transparent;
+    padding-right: 20px;
+}
+
+.filters-sidebar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.filters-sidebar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.filters-sidebar::-webkit-scrollbar-thumb {
+    background: rgba(139, 92, 246, 0.3);
+    border-radius: 3px;
+}
+
+.filters-sidebar::-webkit-scrollbar-thumb:hover {
+    background: rgba(139, 92, 246, 0.6);
+}
+
+/* -------- Поиск на всю ширину -------- */
+.filters-sidebar .search-box {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0 12px;
+    background: var(--bg-soft);
+}
+
+.filters-sidebar .search-box input {
+    width: 100%;
+    padding: 10px 0;
+    font-size: 13px;
+}
+
+.filters-sidebar .filter-block {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.filters-sidebar .filters-categories,
+.filters-sidebar .filters-brands {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* -------- Бренды: без своего скролла (общий) -------- */
+.filters-brands {
+    max-height: none;
+    overflow: visible;
+}
+
+/* -------- Разделители блоков -------- */
+.filter-block:not(:last-of-type) {
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 0;
+}
+
+/* -------- Скрываем дефолтный scrollbar у брендов -------- */
+.filters-brands::-webkit-scrollbar {
+    display: none;
+}
