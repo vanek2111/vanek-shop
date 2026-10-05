@@ -2,77 +2,142 @@
    RESPONSIVE — все медиа-запросы
    ============================================ */
 
-/* -------- Планшеты -------- */
+/* -------- Планшеты (900px и меньше) -------- */
 @media (max-width: 900px) {
-    .catalog-layout { grid-template-columns: 1fr; }
-    .filters-sidebar {
-        position: static;
-        max-height: none;
+    /* Каталог — сайдбар превращается в выезжающую панель */
+    .catalog-layout {
+        grid-template-columns: 1fr;
+        gap: 0;
     }
+
+    /* Сайдбар — выезжающая панель снизу */
+    .filters-sidebar {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        top: auto;
+        max-height: 85vh;
+        border-radius: 20px 20px 0 0;
+        padding: 20px 20px 24px;
+        z-index: 999;
+        transform: translateY(100%);
+        transition: transform 0.3s ease;
+        overflow-y: auto;
+        display: flex;
+        box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    .filters-sidebar.open {
+        transform: translateY(0);
+    }
+
+    /* Показываем элементы панели */
+    .filters-mobile-head { display: flex; }
+    .filters-apply-btn { display: block; }
+    .filters-overlay { display: block; }
+    .filters-open-btn { display: inline-flex; }
+
+    /* Остальные страницы */
     .cart-layout { grid-template-columns: 1fr; }
     .cart-summary { position: static; }
     .product-detail { grid-template-columns: 1fr; gap: 32px; }
 }
 
-/* -------- Мобильные -------- */
+/* -------- Мобильные (768px и меньше) -------- */
 @media (max-width: 768px) {
     .container { padding: 0 16px; }
 
-    /* Шапка */
+    /* -------- Шапка -------- */
     .navbar { padding: 12px 0; }
     .navbar nav { display: none; }
+    .menu-toggle { display: block; }
     .logo { font-size: 16px; }
     .logo-mark { width: 24px; height: 24px; }
     .cart-btn { padding: 8px 12px; font-size: 13px; }
 
-    /* Топбар */
-    .topbar { margin-top: 60px; }
-    .topbar-inner {
-        justify-content: flex-start;
-        gap: 20px;
-        overflow-x: auto;
-        padding-bottom: 4px;
-        scrollbar-width: none;
+    /* -------- Топбар — фикс обрезки -------- */
+    .topbar {
+        margin-top: 60px;
+        padding: 10px 0;
     }
-    .topbar-inner::-webkit-scrollbar { display: none; }
-    .topbar-item { white-space: nowrap; font-size: 12px; }
 
-    /* Hero */
+    .topbar-inner {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+        padding: 0;
+        overflow: visible;
+    }
+
+    .topbar-item {
+        font-size: 12px;
+        white-space: normal;
+    }
+
+    .topbar-item svg {
+        width: 12px;
+        height: 12px;
+    }
+
+    /* -------- Hero -------- */
     .hero { padding: 40px 0 32px; }
     .hero h1 { font-size: 28px; }
     .hero p { font-size: 14px; margin-bottom: 20px; }
+
     .hero-actions {
         flex-direction: column;
         align-items: stretch;
         gap: 8px;
         margin-bottom: 28px;
     }
-    .hero-actions .btn { justify-content: center; padding: 12px 20px; }
+
+    .hero-actions .btn {
+        justify-content: center;
+        padding: 12px 20px;
+    }
+
     .hero-stats { gap: 24px; }
     .hero-stats strong { font-size: 18px; }
     .hero-stats span { font-size: 10px; }
 
-    /* Секции */
-    section { padding: 48px 0; }
+    /* -------- Секции -------- */
+    section { padding: 36px 0; }
+
     .section-head { margin-bottom: 28px; }
     .section-head h2 { font-size: 22px; }
     .section-head p { font-size: 13px; }
+
     .section-head-row {
         margin-bottom: 24px;
         flex-direction: column;
         align-items: flex-start;
         gap: 8px;
     }
+
     .section-head-row h2 { font-size: 22px; }
 
-    /* Категории */
-    .categories-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-    .category-tile { padding: 16px 12px; gap: 8px; }
+    /* -------- Категории -------- */
+    .categories-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    .category-tile {
+        padding: 16px 12px;
+        gap: 8px;
+    }
+
     .category-tile svg { width: 26px; height: 26px; }
     .category-tile span { font-size: 12px; }
 
-    /* Товары */
-    .products-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    /* -------- Товары -------- */
+    .products-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+
     .product-image-wrap { height: 130px; }
     .product-image-wrap svg { width: 40px; height: 40px; }
     .product-body { padding: 12px; }
@@ -82,87 +147,7 @@
     .product-btn { padding: 9px; font-size: 12px; }
     .product-badge { font-size: 9px; padding: 3px 7px; top: 8px; left: 8px; }
 
-    /* CTA */
-    .cta-box { padding: 32px 20px; }
-    .cta-box h2 { font-size: 22px; }
-    .cta-form { flex-direction: column; }
-    .cta-form input, .cta-form button { width: 100%; }
-
-    /* Отзывы, бренды, фичи */
-    .reviews-grid { grid-template-columns: 1fr; gap: 12px; }
-    .review-card { padding: 18px; }
-    .brands-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
-    .brand-item { padding: 16px 8px; font-size: 13px; }
-    .features-grid { grid-template-columns: 1fr; gap: 12px; }
-    .feature-card { padding: 20px; }
-
-    /* Каталог */
-    .catalog-hero { padding: 100px 0 24px; }
-    .catalog-hero h1 { font-size: 26px; }
-    .catalog-page { padding: 24px 0 60px; }
-    .catalog-layout { grid-template-columns: 1fr; gap: 20px; }
-    .filters-sidebar { padding: 18px; }
-    .catalog-toolbar { flex-direction: column; align-items: stretch; gap: 10px; }
-    .sort-select { width: 100%; }
-
-    /* Товар */
-    .product-page { padding: 100px 0 60px; }
-    .product-detail { gap: 20px; }
-    .product-detail-image svg { width: 80px; height: 80px; }
-    .product-detail-name { font-size: 22px; }
-    .product-detail-price { font-size: 26px; }
-    .product-detail-actions { flex-direction: column; gap: 8px; }
-    .product-detail-btn { min-width: 0; width: 100%; }
-    .product-detail-specs { margin-top: 40px; padding-top: 28px; }
-    .product-detail-specs h2 { font-size: 18px; margin-bottom: 16px; }
-    .specs-list { grid-template-columns: 1fr; }
-    .specs-row { padding: 12px 16px; }
-    .specs-row dt, .specs-row dd { font-size: 13px; }
-
-    /* Корзина */
-    .cart-page { padding: 100px 0 60px; }
-    .cart-head { flex-direction: column; align-items: flex-start; gap: 10px; }
-    .cart-head h1 { font-size: 26px; }
-    .cart-summary { padding: 18px; }
-
-    /* Футер */
-    .footer-inner { flex-direction: column; text-align: center; gap: 20px; }
-    .footer-links { flex-wrap: wrap; justify-content: center; }
-}
-
-/* -------- Маленькие телефоны -------- */
-@media (max-width: 600px) {
-    .cart-item {
-        grid-template-columns: 64px 1fr auto;
-        grid-template-areas:
-            "img info remove"
-            "img qty  price";
-        row-gap: 10px;
-    }
-    .cart-item-image { grid-area: img; width: 64px; height: 64px; }
-    .cart-item-info { grid-area: info; }
-    .cart-item-remove { grid-area: remove; }
-    .cart-item-qty { grid-area: qty; }
-    .cart-item-price { grid-area: price; text-align: right; }
-}
-
-@media (max-width: 400px) {
-    .products-grid { grid-template-columns: 1fr; }
-    .hero h1 { font-size: 24px; }
-    .topbar-item { font-size: 11px; }
-}
-/* ============================================
-   МОБИЛКА — бургер + горизонтальный скролл
-   ============================================ */
-
-@media (max-width: 768px) {
-    /* Показываем бургер */
-    .menu-toggle { display: block; }
-
-    /* Топбар — убираем лишние отступы */
-    .topbar-inner { padding: 8px 0; }
-
-    /* Хиты/Новинки — горизонтальный скролл как в маркетплейсах */
+    /* -------- Хиты / Новинки — горизонтальный скролл -------- */
     .products-grid-scroll {
         display: flex !important;
         flex-wrap: nowrap;
@@ -190,73 +175,81 @@
     .products-grid-scroll .product-price { font-size: 15px; margin-bottom: 6px; }
     .products-grid-scroll .product-btn { padding: 8px; font-size: 11px; }
 
-    /* Секции — чуть меньше отступы */
-    section { padding: 36px 0; }
-}
-/* ============================================
-   МОБИЛКА — выезжающие фильтры + фиксы
-   ============================================ */
+    /* -------- CTA -------- */
+    .cta-box { padding: 32px 20px; }
+    .cta-box h2 { font-size: 22px; }
+    .cta-form { flex-direction: column; }
+    .cta-form input,
+    .cta-form button { width: 100%; }
 
-@media (max-width: 900px) {
-    /* Показываем кнопку "Фильтры" */
-    .filters-open-btn { display: inline-flex; }
-    .filters-apply-btn { display: block; }
+    /* -------- Отзывы, бренды, фичи -------- */
+    .reviews-grid { grid-template-columns: 1fr; gap: 12px; }
+    .review-card { padding: 18px; }
 
-    /* Сайдбар — выезжающая панель снизу */
-    .filters-sidebar {
-        position: fixed !important;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        top: auto;
-        max-height: 85vh;
-        border-radius: 20px 20px 0 0;
-        padding: 20px 20px 24px;
-        z-index: 99;
-        transform: translateY(100%);
-        transition: transform 0.3s ease;
-        overflow-y: auto;
-        display: flex;
-        box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.2);
-    }
+    .brands-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .brand-item { padding: 16px 8px; font-size: 13px; }
 
-    .filters-sidebar.open {
-        transform: translateY(0);
-    }
+    .features-grid { grid-template-columns: 1fr; gap: 12px; }
+    .feature-card { padding: 20px; }
 
-    /* Показываем шапку панели и overlay */
-    .filters-mobile-head { display: flex; }
-    .filters-overlay { display: block; }
+    /* -------- Каталог -------- */
+    .catalog-hero { padding: 100px 0 24px; }
+    .catalog-hero h1 { font-size: 26px; }
+    .catalog-page { padding: 24px 0 60px; }
+    .catalog-toolbar { flex-direction: column; align-items: stretch; gap: 10px; }
+    .sort-select { width: 100%; }
 
-    /* Скрываем старый сайдбар из потока */
-    .catalog-layout {
-        grid-template-columns: 1fr !important;
-        gap: 0;
-    }
-}
+    /* -------- Товар -------- */
+    .product-page { padding: 100px 0 60px; }
+    .product-detail { gap: 20px; }
+    .product-detail-image svg { width: 80px; height: 80px; }
+    .product-detail-name { font-size: 22px; }
+    .product-detail-price { font-size: 26px; }
+    .product-detail-actions { flex-direction: column; gap: 8px; }
+    .product-detail-btn { min-width: 0; width: 100%; }
+    .product-detail-specs { margin-top: 40px; padding-top: 28px; }
+    .product-detail-specs h2 { font-size: 18px; margin-bottom: 16px; }
+    .specs-list { grid-template-columns: 1fr; }
+    .specs-row { padding: 12px 16px; }
+    .specs-row dt,
+    .specs-row dd { font-size: 13px; }
 
-/* -------- ФИКС ТОПБАРА на мобилке -------- */
-@media (max-width: 768px) {
-    .topbar {
-        padding: 8px 0;
-    }
+    /* -------- Корзина -------- */
+    .cart-page { padding: 100px 0 60px; }
+    .cart-head { flex-direction: column; align-items: flex-start; gap: 10px; }
+    .cart-head h1 { font-size: 26px; }
+    .cart-summary { padding: 18px; }
 
-    .topbar-inner {
-        display: flex;
+    /* -------- Футер -------- */
+    .footer-inner {
         flex-direction: column;
-        align-items: flex-start;
-        gap: 6px;
-        padding: 0;
-        overflow: visible;
+        text-align: center;
+        gap: 20px;
     }
 
-    .topbar-item {
-        font-size: 12px;
-        white-space: normal;
+    .footer-links { flex-wrap: wrap; justify-content: center; }
+}
+
+/* -------- Маленькие телефоны (600px и меньше) -------- */
+@media (max-width: 600px) {
+    .cart-item {
+        grid-template-columns: 64px 1fr auto;
+        grid-template-areas:
+            "img info remove"
+            "img qty  price";
+        row-gap: 10px;
     }
 
-    .topbar-item svg {
-        width: 12px;
-        height: 12px;
-    }
+    .cart-item-image { grid-area: img; width: 64px; height: 64px; }
+    .cart-item-info { grid-area: info; }
+    .cart-item-remove { grid-area: remove; }
+    .cart-item-qty { grid-area: qty; }
+    .cart-item-price { grid-area: price; text-align: right; }
+}
+
+/* -------- Очень маленькие (400px и меньше) -------- */
+@media (max-width: 400px) {
+    .products-grid { grid-template-columns: 1fr; }
+    .hero h1 { font-size: 24px; }
+    .topbar-item { font-size: 11px; }
 }
