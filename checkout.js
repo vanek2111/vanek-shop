@@ -270,6 +270,71 @@ function showSuccess(orderId) {
     `;
     window.scrollTo(0, 0);
 }
+// ========== МАСКА ТЕЛЕФОНА ==========
+function initPhoneMask() {
+    const phoneInput = document.getElementById('customer-phone');
+    if (!phoneInput) return;
+
+    phoneInput.addEventListener('focus', () => {
+        if (!phoneInput.value) {
+            phoneInput.value = '+7 (';
+        }
+    });
+
+    phoneInput.addEventListener('blur', () => {
+        // Если только "+7 (" — очищаем
+        if (phoneInput.value === '+7 (' || phoneInput.value === '+7') {
+            phoneInput.value = '';
+        }
+    });
+
+    phoneInput.addEventListener('input', (e) => {
+        let value = e.target.value.replace(/\D/g, ''); // только цифры
+
+        // Если начинается с 8 — меняем на 7
+        if (value.startsWith('8')) {
+            value = '7' + value.slice(1);
+        }
+
+        // Если не начинается с 7 — добавляем
+        if (value && !value.startsWith('7')) {
+            value = '7' + value;
+        }
+
+        // Максимум 11 цифр (7 + 10)
+        value = value.slice(0, 11);
+
+        // Форматируем
+        let formatted = '';
+        if (value.length > 0) {
+            formatted = '+7';
+        }
+        if (value.length > 1) {
+            formatted += ' (' + value.slice(1, 4);
+        }
+        if (value.length >= 5) {
+            formatted += ') ' + value.slice(4, 7);
+        }
+        if (value.length >= 8) {
+            formatted += '-' + value.slice(7, 9);
+        }
+        if (value.length >= 10) {
+            formatted += '-' + value.slice(9, 11);
+        }
+
+        e.target.value = formatted;
+    });
+
+    // Разрешаем только цифры и служебные клавиши
+    phoneInput.addEventListener('keypress', (e) => {
+        if (!/[0-9]/.test(e.key) && !['Backspace', 'Delete', 'Tab', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+            e.preventDefault();
+        }
+    });
+}
+
+// Запускаем маску
+initPhoneMask();
 
 // ========== СТАРТ ==========
 initCheckout();
