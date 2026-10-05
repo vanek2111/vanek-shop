@@ -1,0 +1,169 @@
+/* ============================================
+   LAYOUT — шапка, топбар, футер
+   ============================================ */
+
+/* -------- ШАПКА -------- */
+.navbar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    background: var(--navbar-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 0;
+    z-index: 100;
+    transition: background 0.3s ease, border-color 0.3s ease;
+}
+
+.navbar .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 32px;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text);
+    text-decoration: none;
+    letter-spacing: -0.01em;
+}
+
+.logo-mark {
+    width: 28px; height: 28px;
+    display: grid; place-items: center;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    border-radius: 8px;
+    color: #fff;
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.logo:hover .logo-mark { transform: rotate(-15deg) scale(1.08); }
+
+.logo-text em { font-style: normal; color: var(--accent); }
+
+.navbar nav { display: flex; gap: 28px; }
+
+.navbar nav a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.navbar nav a:hover { color: var(--text); }
+.navbar nav a.active { color: var(--text); font-weight: 600; }
+
+.navbar-actions { display: flex; align-items: center; gap: 8px; }
+
+/* -------- Кнопка темы -------- */
+.theme-toggle {
+    width: 36px; height: 36px;
+    display: grid; place-items: center;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.theme-toggle:hover {
+    color: var(--text);
+    border-color: var(--border-hover);
+    background: var(--accent-glow);
+}
+
+.theme-toggle svg {
+    position: absolute;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+[data-theme="light"] .theme-toggle .icon-sun { opacity: 0; transform: rotate(-90deg); }
+[data-theme="light"] .theme-toggle .icon-moon { opacity: 1; transform: rotate(0); }
+[data-theme="dark"] .theme-toggle .icon-sun { opacity: 1; transform: rotate(0); }
+[data-theme="dark"] .theme-toggle .icon-moon { opacity: 0; transform: rotate(90deg); }
+
+/* -------- Кнопка корзины -------- */
+.cart-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--accent);
+    color: #fff;
+    padding: 9px 16px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    transition: background 0.2s, transform 0.2s;
+}
+
+.cart-btn:hover { background: var(--accent-2); transform: translateY(-1px); }
+
+/* -------- ТОПБАР -------- */
+.topbar {
+    margin-top: 65px;
+    background: var(--bg-soft);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 0;
+    transition: background 0.3s ease;
+}
+
+.topbar-inner {
+    display: flex;
+    justify-content: center;
+    gap: 48px;
+    flex-wrap: wrap;
+}
+
+.topbar-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.topbar-item svg { color: var(--accent); flex-shrink: 0; }
+
+/* -------- ФУТЕР -------- */
+footer {
+    border-top: 1px solid var(--border);
+    padding: 40px 0 32px;
+    background: var(--bg-soft);
+}
+
+.footer-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 24px;
+}
+
+.footer-brand p {
+    color: var(--text-muted);
+    font-size: 13px;
+    margin-top: 6px;
+}
+
+.footer-links { display: flex; gap: 24px; }
+
+.footer-links a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 13px;
+    transition: color 0.2s;
+}
+
+.footer-links a:hover { color: var(--accent); }
+
+.footer-copy { color: var(--text-muted); font-size: 12px; }
