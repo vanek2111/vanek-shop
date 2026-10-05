@@ -286,3 +286,13 @@
         flex-shrink: 0;
     }
 }
+@media (max-width: 768px) {
+    .topbar-inner {
+        padding: 0 16px !important;
+        gap: 8px !important;
+    }
+
+    .topbar-item {
+        padding: 4px 0 !important;
+    }
+}
