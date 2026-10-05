@@ -1,9 +1,11 @@
 // ========== ПОДКЛЮЧЕНИЕ К SUPABASE ==========
-const SUPABASE_URL = 'https://ytqxfykqiekphcpjrvon.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_zOXsiffHOAy8S693kYoL6g_CivX9ffr';
-
-const { createClient } = supabase;
-const db = createClient(SUPABASE_URL, SUPABASE_KEY);
+if (typeof window.db === 'undefined') {
+    window.db = supabase.createClient(
+        'https://ytqxfykqiekphcpjrvon.supabase.co',
+        'sb_publishable_zOXsiffHOAy8S693kYoL6g_CivX9ffr'
+    );
+}
+const db = window.db;
 
 let allProducts = [];
 
