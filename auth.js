@@ -1,9 +1,12 @@
 // ========== ПОДКЛЮЧЕНИЕ К SUPABASE ==========
-const SUPABASE_URL = 'https://ytqxfykqiekphcpjrvon.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_zOXsiffHOAy8S693kYoL6g_CivX9ffr';
-
-const { createClient } = supabase;
-const db = createClient(SUPABASE_URL, SUPABASE_KEY);
+// Используем глобальный db из app.js, если он есть
+if (typeof window.db === 'undefined') {
+    window.db = supabase.createClient(
+        'https://ytqxfykqiekphcpjrvon.supabase.co',
+        'sb_publishable_zOXsiffHOAy8S693kYoL6g_CivX9ffr'
+    );
+}
+const db = window.db;
 
 // ========== ХЕЛПЕРЫ ==========
 function showMessage(text, type = 'error') {
@@ -29,7 +32,7 @@ function setLoading(btn, loading, text = null) {
     }
 }
 
-// ========== ОБНОВИТЬ ШАПКУ (кнопка Войти/Аккаунт) ==========
+// ========== ОБНОВИТЬ ШАПКУ ==========
 async function updateHeaderAuth() {
     const { data: { session } } = await db.auth.getSession();
     const authBtn = document.getElementById('auth-btn');
@@ -37,9 +40,17 @@ async function updateHeaderAuth() {
 
     if (!authBtn) return;
 
+    const iconSvg = `
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+    `;
+
     if (session && session.user) {
-        // Залогинен — берём имя из profiles (самое свежее)
-        let fullName = session.user.user_metadata?.full_name || session.user.email.split('@')[0];
+        // Залогинен — берём имя из profiles
+        let fullName = session.user.user_metadata?.full_name
+            || session.user.email.split('@')[0];
 
         try {
             const { data: profile } = await db
@@ -55,16 +66,7 @@ async function updateHeaderAuth() {
             console.warn('Не удалось загрузить профиль:', e);
         }
 
-        // В шапке — только первое слово
         const firstName = fullName.split(' ')[0];
-
-        // Иконка юзера (SVG)
-        const iconSvg = `
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                <circle cx="12" cy="7" r="4"></circle>
-            </svg>
-        `;
 
         if (authBtn) {
             authBtn.href = 'account.html';
@@ -77,13 +79,6 @@ async function updateHeaderAuth() {
         }
     } else {
         // Не залогинен
-        const iconSvg = `
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                <circle cx="12" cy="7" r="4"></circle>
-            </svg>
-        `;
-
         if (authBtn) {
             authBtn.href = 'login.html';
             authBtn.innerHTML = `${iconSvg}<span>Войти</span>`;
@@ -107,7 +102,6 @@ async function handleRegister(e) {
     const password2 = document.getElementById('reg-password2').value;
     const btn = document.getElementById('reg-submit');
 
-    // Валидация
     if (name.length < 2) return showMessage('Введите имя и фамилию');
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return showMessage('Введите корректный email');
     if (password.length < 8) return showMessage('Пароль должен быть не менее 8 символов');
@@ -118,11 +112,7 @@ async function handleRegister(e) {
     const { data, error } = await db.auth.signUp({
         email,
         password,
-        options: {
-            data: {
-                full_name: name
-            }
-        }
+        options: { data: { full_name: name } }
     });
 
     if (error) {
@@ -133,7 +123,6 @@ async function handleRegister(e) {
         return;
     }
 
-    // На всякий случай обновляем профиль (если триггер не сработал)
     if (data.user) {
         try {
             await db.from('profiles').upsert({
@@ -192,7 +181,7 @@ async function requireAuth() {
     return session;
 }
 
-// ========== ЕСЛИ УЖЕ ЗАЛОГИНЕН — РЕДИРЕКТ ==========
+// ========== РЕДИРЕКТ ЕСЛИ ЗАЛОГИНЕН ==========
 async function redirectIfLoggedIn() {
     const { data: { session } } = await db.auth.getSession();
     if (session) {
@@ -200,7 +189,7 @@ async function redirectIfLoggedIn() {
     }
 }
 
-// ========== АВТООБНОВЛЕНИЕ ШАПКИ ПРИ СМЕНЕ СЕССИИ ==========
+// ========== ПОДПИСКА НА ИЗМЕНЕНИЕ АВТОРИЗАЦИИ ==========
 db.auth.onAuthStateChange((event, session) => {
     updateHeaderAuth();
 });
