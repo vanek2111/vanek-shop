@@ -48,33 +48,63 @@
     gap: 16px;
 }
 
-/* -------- СЕТКА ДЛЯ ХИТОВ/НОВИНОК — фиксированно 4 колонки -------- */
+/* -------- СЕТКА ДЛЯ ХИТОВ/НОВИНОК — 4-5 в ряд на десктопе -------- */
 .products-grid-fixed {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 18px;
     align-items: stretch;
-    max-width: 1300px;
+    max-width: 1400px;
     margin: 0 auto;
 }
 
+/* Планшет — 4 карточки */
 @media (max-width: 1200px) {
     .products-grid-fixed {
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(4, minmax(0, 1fr));
         gap: 16px;
     }
 }
 
-@media (max-width: 768px) {
+/* Маленький планшет — 3 карточки */
+@media (max-width: 992px) {
     .products-grid-fixed {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 12px;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
     }
 }
 
-@media (max-width: 480px) {
+/* -------- МОБИЛКА — 3 карточки + горизонтальный скролл -------- */
+@media (max-width: 768px) {
     .products-grid-fixed {
-        grid-template-columns: 1fr;
+        display: flex !important;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        gap: 12px;
+        padding-bottom: 12px;
+        margin-right: -16px;
+        padding-right: 16px;
+        scrollbar-width: none;
+        max-width: none;
+    }
+
+    .products-grid-fixed::-webkit-scrollbar {
+        display: none;
+    }
+
+    .products-grid-fixed .product-card {
+        flex: 0 0 calc((100% - 24px) / 3); /* 3 карточки видно */
+        min-width: 140px;
+        scroll-snap-align: start;
+    }
+}
+
+/* Очень маленькие экраны — 2 карточки */
+@media (max-width: 420px) {
+    .products-grid-fixed .product-card {
+        flex: 0 0 calc((100% - 12px) / 2);
+        min-width: 130px;
     }
 }
 
