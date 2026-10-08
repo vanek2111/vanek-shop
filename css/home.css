@@ -195,12 +195,14 @@
 
 /* НОВЫЙ аватар (фото) */
 .review-avatar-img {
-    width: 44px !important;
-    height: 44px !important;
-    max-width: 44px !important;
-    max-height: 44px !important;
-    border-radius: 50% !important;
-    object-fit: cover !important;
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+    max-width: 44px;
+    max-height: 44px;
+    border-radius: 50%;
+    object-fit: cover;
     flex-shrink: 0;
     border: 2px solid var(--border);
     transition: border-color 0.2s;
