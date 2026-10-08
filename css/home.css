@@ -193,21 +193,21 @@
     flex-shrink: 0;
 }
 
-/* НОВЫЙ аватар (фото) */
+/* ============ АВАТАРКИ — ФИНАЛЬНЫЙ ФИКС ============ */
 .review-avatar-img {
-    width: 44px;
-    height: 44px;
-    min-width: 44px;
-    min-height: 44px;
-    max-width: 44px;
-    max-height: 44px;
-    border-radius: 50%;
-    object-fit: cover;
+    width: 44px !important;
+    height: 44px !important;
+    min-width: 44px !important;
+    min-height: 44px !important;
+    max-width: 44px !important;
+    max-height: 44px !important;
+    border-radius: 50% !important;
+    object-fit: cover !important;
+    display: block !important;
     flex-shrink: 0;
     border: 2px solid var(--border);
     transition: border-color 0.2s;
-    display: block;
-    background: var(--bg-soft);
+    overflow: hidden;
 }
 
 .review-card:hover .review-avatar-img {
