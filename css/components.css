@@ -37,9 +37,15 @@
 /* -------- СЕТКА ТОВАРОВ -------- */
 .products-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 18px;
     align-items: stretch;
+}
+
+/* Каталог — 5-6 в ряд на широких экранах */
+.catalog-page .products-grid {
+    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    gap: 16px;
 }
 
 .loading {
