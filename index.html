@@ -290,7 +290,57 @@
     </div>
 </div>
     </section>
+<!-- ========== КНОПКА + МОДАЛКА ОТЗЫВА ========== -->
+<section class="review-cta">
+    <div class="container">
+        <div class="review-cta-box">
+            <h2>Купил у нас? Оставь отзыв</h2>
+            <p>Помоги другим геймерам выбрать — расскажи, что думаешь</p>
+            <button class="btn btn-primary" id="open-review-modal">
+                Оставить отзыв →
+            </button>
+        </div>
+    </div>
+</section>
 
+<!-- МОДАЛЬНОЕ ОКНО -->
+<div class="modal" id="review-modal">
+    <div class="modal-overlay" id="modal-overlay"></div>
+    <div class="modal-content">
+        <button class="modal-close" id="modal-close" aria-label="Закрыть">×</button>
+        <h2 class="modal-title">Оставить отзыв</h2>
+
+        <form class="review-form" id="review-form">
+            <div class="form-group">
+                <label for="review-name">Имя</label>
+                <input type="text" id="review-name" placeholder="Как вас зовут?" required>
+            </div>
+
+            <div class="form-group">
+                <label>Оценка</label>
+                <div class="rating-input" id="rating-input">
+                    <span data-rating="1">★</span>
+                    <span data-rating="2">★</span>
+                    <span data-rating="3">★</span>
+                    <span data-rating="4">★</span>
+                    <span data-rating="5">★</span>
+                </div>
+                <input type="hidden" id="review-rating" value="5">
+            </div>
+
+            <div class="form-group">
+                <label for="review-text">Отзыв</label>
+                <textarea id="review-text" rows="4" placeholder="Что понравилось? Что можно улучшить?" required></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary" id="review-submit">
+                Отправить отзыв
+            </button>
+
+            <div class="form-message" id="review-message"></div>
+        </form>
+    </div>
+</div>
     <section class="brands">
         <div class="container">
             <div class="section-head">
