@@ -70,10 +70,16 @@ function renderHitsAndNew(data) {
 }
 
 function renderCard(product, badge) {
+    const imageUrl = getProductImage(product);
+    const image = imageUrl ? `
+        <img class="product-image" src="${imageUrl}" alt="${product.name}" loading="lazy" decoding="async"
+             onerror="this.hidden=true; this.parentElement.querySelector('.product-image-fallback').hidden=false">
+    ` : '';
     return `
         <a href="product.html?id=${product.id}" class="product-card">
             <div class="product-image-wrap">
-                ${getIcon(product)}
+                ${image}
+                <div class="product-image-fallback" ${imageUrl ? 'hidden' : ''}>${getIcon(product)}</div>
                 ${badge ? `<div class="product-badge">${badge}</div>` : ''}
             </div>
             <div class="product-body">

@@ -211,10 +211,13 @@ function renderProducts() {
     }
 
     noResults.style.display = 'none';
-    grid.innerHTML = state.filteredProducts.map(product => `
+    grid.innerHTML = state.filteredProducts.map(product => {
+        const imageUrl = getProductImage(product);
+        return `
         <a href="product.html?id=${product.id}" class="product-card">
             <div class="product-image-wrap">
-                ${getIcon(product)}
+                ${imageUrl ? `<img class="product-image" src="${imageUrl}" alt="${product.name}" loading="lazy" decoding="async" onerror="this.hidden=true; this.parentElement.querySelector('.product-image-fallback').hidden=false">` : ''}
+                <div class="product-image-fallback" ${imageUrl ? 'hidden' : ''}>${getIcon(product)}</div>
             </div>
             <div class="product-body">
                 <div class="product-name">${product.name}</div>
@@ -225,7 +228,8 @@ function renderProducts() {
                 </button>
             </div>
         </a>
-    `).join('');
+    `;
+    }).join('');
 }
 
 // ========== СЛУШАТЕЛИ ==========
