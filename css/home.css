@@ -594,3 +594,49 @@
     color: var(--text-muted);
     line-height: 1.6;
 }
+/* ============ КАТЕГОРИИ ============ */
+.categories { background: var(--bg); }
+
+.categories-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 14px;
+}
+
+.category-tile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 24px 16px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    text-decoration: none;
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.25s ease;
+    box-shadow: var(--shadow-card);
+}
+
+.category-tile:hover {
+    transform: translateY(-4px);
+    border-color: var(--border-hover);
+    box-shadow: var(--shadow-card-hover);
+}
+
+.category-tile svg {
+    width: 32px;
+    height: 32px;
+    color: var(--accent);
+    transition: transform 0.3s;
+}
+
+.category-tile:hover svg { transform: scale(1.15); }
+
+.category-tile span {
+    color: var(--text);
+    text-decoration: none;
+}
