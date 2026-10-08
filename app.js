@@ -62,8 +62,8 @@ async function loadProducts() {
 
 // ========== ХИТЫ И НОВИНКИ ==========
 function renderHitsAndNew(data) {
-    const hits = [...data].sort((a, b) => b.price - a.price).slice(0, 4);
-    const newItems = [...data].sort((a, b) => b.id - a.id).slice(0, 4);
+    const hits = [...data].sort((a, b) => b.price - a.price).slice(0, 8);
+    const newItems = [...data].sort((a, b) => b.id - a.id).slice(0, 8);
 
     document.getElementById('hits-grid').innerHTML = hits.map(p => renderCard(p, 'ХИТ')).join('');
     document.getElementById('new-grid').innerHTML = newItems.map(p => renderCard(p, 'NEW')).join('');
