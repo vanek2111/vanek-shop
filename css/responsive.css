@@ -174,36 +174,6 @@
     .product-badge { font-size: 9px; padding: 3px 7px; top: 8px; left: 8px; }
 
     /* ============================================
-       ХИТЫ / НОВИНКИ — горизонтальный скролл
-       ============================================ */
-    .products-grid-scroll {
-        display: flex !important;
-        flex-wrap: nowrap;
-        overflow-x: auto;
-        scroll-snap-type: x mandatory;
-        gap: 12px;
-        padding-bottom: 8px;
-        margin-right: -16px;
-        padding-right: 16px;
-        scrollbar-width: none;
-    }
-
-    .products-grid-scroll::-webkit-scrollbar { display: none; }
-
-    .products-grid-scroll .product-card {
-        flex: 0 0 180px;
-        scroll-snap-align: start;
-    }
-
-    .products-grid-scroll .product-image-wrap { height: 120px; }
-    .products-grid-scroll .product-image-wrap svg { width: 36px; height: 36px; }
-    .products-grid-scroll .product-body { padding: 10px; }
-    .products-grid-scroll .product-name { font-size: 12px; }
-    .products-grid-scroll .product-brand { font-size: 9px; margin-bottom: 6px; }
-    .products-grid-scroll .product-price { font-size: 15px; margin-bottom: 6px; }
-    .products-grid-scroll .product-btn { padding: 8px; font-size: 11px; }
-
-    /* ============================================
        CTA
        ============================================ */
     .cta-box { padding: 32px 20px; }
