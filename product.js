@@ -22,7 +22,7 @@ async function loadProduct() {
             <div class="product-error">
                 <h1>Товар не найден</h1>
                 <p>В ссылке нет ID товара</p>
-                <a href="index.html#catalog" class="btn btn-primary">В каталог</a>
+                <a href="catalog.html" class="btn btn-primary">В каталог</a>
             </div>
         `;
         return;
@@ -40,7 +40,7 @@ async function loadProduct() {
             <div class="product-error">
                 <h1>Товар не найден</h1>
                 <p>Возможно, он был удалён или ссылка устарела</p>
-                <a href="index.html#catalog" class="btn btn-primary">В каталог</a>
+                <a href="catalog.html" class="btn btn-primary">В каталог</a>
             </div>
         `;
         return;
@@ -75,7 +75,7 @@ function renderProduct(p) {
     container.innerHTML = `
         <div class="product-detail">
             <div class="product-detail-image">
-                <img src="${p.image}" alt="${p.name}">
+                ${renderProductPhoto(p)}
             </div>
 
             <div class="product-detail-info">

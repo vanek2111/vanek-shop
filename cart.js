@@ -90,7 +90,7 @@ function renderCart() {
                 </div>
                 <h2>Корзина пуста</h2>
                 <p>Добавьте товары из каталога, чтобы оформить заказ</p>
-                <a href="index.html#catalog" class="btn btn-primary">Перейти в каталог</a>
+                <a href="catalog.html" class="btn btn-primary">Перейти в каталог</a>
             </div>
         `;
         return;
@@ -110,7 +110,7 @@ function renderCart() {
                 ${items.map(item => `
                     <div class="cart-item">
                         <div class="cart-item-image">
-                            <img src="${item.image}" alt="${item.name}">
+                            ${renderProductPhoto(item)}
                         </div>
                         <div class="cart-item-info">
                             <div class="cart-item-name">${item.name}</div>

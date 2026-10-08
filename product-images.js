@@ -70,3 +70,15 @@ function getProductImage(product) {
     if (!product.image || /via\.placeholder\.com/i.test(product.image)) return '';
     return product.image;
 }
+
+// Shared detail/cart renderer: the same photo source as the catalog.
+function renderProductPhoto(product) {
+    const escapeAttribute = value => String(value).replace(/[&<>"']/g, char => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    }[char]));
+    const imageUrl = getProductImage(product);
+    return `${imageUrl ? `<img src="${escapeAttribute(imageUrl)}" alt="${escapeAttribute(product.name)}" decoding="async" onerror="this.hidden=true; this.nextElementSibling.hidden=false">` : ''}
+        <span class="photo-unavailable" ${imageUrl ? 'hidden' : ''} role="img" aria-label="Фото товара недоступно">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8" cy="8" r="1.5"/><path d="m3 17 5-5 4 4 4-6 5 7"/></svg>
+        </span>`;
+}
