@@ -153,3 +153,136 @@ if (document.getElementById('hits-grid')) {
     loadProducts();
 }
 updateCartCount();
+
+// ========== МОДАЛКА ОТЗЫВА ==========
+const openReviewBtn = document.getElementById('open-review-modal');
+const reviewModal = document.getElementById('review-modal');
+const modalOverlay = document.getElementById('modal-overlay');
+const modalClose = document.getElementById('modal-close');
+const reviewForm = document.getElementById('review-form');
+
+if (openReviewBtn && reviewModal) {
+    // Открыть
+    openReviewBtn.addEventListener('click', () => {
+        reviewModal.classList.add('open');
+        document.body.style.overflow = 'hidden';
+    });
+
+    // Закрыть
+    function closeModal() {
+        reviewModal.classList.remove('open');
+        document.body.style.overflow = '';
+    }
+
+    modalClose?.addEventListener('click', closeModal);
+    modalOverlay?.addEventListener('click', closeModal);
+
+    // Esc закрывает
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && reviewModal.classList.contains('open')) {
+            closeModal();
+        }
+    });
+}
+
+// ========== ЗВЁЗДЫ В ФОРМЕ ==========
+const ratingStars = document.querySelectorAll('#rating-input span');
+const ratingInput = document.getElementById('review-rating');
+
+if (ratingStars.length > 0) {
+    ratingStars.forEach(star => {
+        star.addEventListener('click', () => {
+            const rating = parseInt(star.dataset.rating);
+            ratingInput.value = rating;
+
+            ratingStars.forEach((s, i) => {
+                if (i < rating) {
+                    s.classList.add('active');
+                } else {
+                    s.classList.remove('active');
+                }
+            });
+        });
+
+        star.addEventListener('mouseenter', () => {
+            const rating = parseInt(star.dataset.rating);
+            ratingStars.forEach((s, i) => {
+                s.style.color = i < rating ? '#fbbf24' : '';
+            });
+        });
+    });
+
+    // При уходе — возвращаем как было
+    const ratingContainer = document.getElementById('rating-input');
+    ratingContainer?.addEventListener('mouseleave', () => {
+        const currentRating = parseInt(ratingInput.value);
+        ratingStars.forEach((s, i) => {
+            s.style.color = '';
+            if (i < currentRating) {
+                s.classList.add('active');
+            } else {
+                s.classList.remove('active');
+            }
+        });
+    });
+
+    // По умолчанию — 5 звёзд
+    ratingStars.forEach(s => s.classList.add('active'));
+}
+
+// ========== ОТПРАВКА ОТЗЫВА ==========
+if (reviewForm) {
+    reviewForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const name = document.getElementById('review-name').value.trim();
+        const rating = parseInt(document.getElementById('review-rating').value);
+        const text = document.getElementById('review-text').value.trim();
+        const message = document.getElementById('review-message');
+        const submitBtn = document.getElementById('review-submit');
+
+        if (name.length < 2) {
+            message.textContent = 'Введите имя';
+            message.className = 'form-message error';
+            return;
+        }
+
+        if (text.length < 10) {
+            message.textContent = 'Отзыв должен быть не менее 10 символов';
+            message.className = 'form-message error';
+            return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Отправляем...';
+
+        const { error } = await db.from('reviews').insert({
+            name: name,
+            rating: rating,
+            text: text,
+            status: 'new'
+        });
+
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Отправить отзыв';
+
+        if (error) {
+            console.error('Ошибка:', error);
+            message.textContent = 'Ошибка отправки. Попробуйте позже';
+            message.className = 'form-message error';
+            return;
+        }
+
+        message.textContent = '✓ Спасибо! Отзыв появится после проверки';
+        message.className = 'form-message success';
+
+        reviewForm.reset();
+        ratingInput.value = 5;
+        ratingStars.forEach(s => s.classList.add('active'));
+
+        setTimeout(() => {
+            message.className = 'form-message';
+            closeModal?.();
+        }, 2500);
+    });
+}
