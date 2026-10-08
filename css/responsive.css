@@ -159,7 +159,7 @@
     /* ============================================
        ТОВАРЫ
        ============================================ */
-    .products-grid {
+    .catalog-page .products-grid {
         grid-template-columns: repeat(2, 1fr);
         gap: 12px;
     }
@@ -263,7 +263,7 @@
    ОЧЕНЬ МАЛЕНЬКИЕ (до 400px)
    ============================================ */
 @media (max-width: 400px) {
-    .products-grid { grid-template-columns: 1fr; }
+    .catalog-page .products-grid { grid-template-columns: 1fr; }
     .hero h1 { font-size: 24px; }
     .topbar-item { font-size: 11px !important; }
 }
