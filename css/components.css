@@ -51,9 +51,11 @@
 /* -------- СЕТКА ДЛЯ ХИТОВ/НОВИНОК — фиксированно 4 колонки -------- */
 .products-grid-fixed {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 20px;
     align-items: stretch;
+    max-width: 1300px;
+    margin: 0 auto;
 }
 
 @media (max-width: 1200px) {
