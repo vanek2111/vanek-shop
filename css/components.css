@@ -34,7 +34,7 @@
 
 .btn-ghost:hover { background: var(--accent-glow); border-color: var(--border-hover); }
 
-/* -------- СЕТКА ТОВАРОВ -------- */
+/* -------- СЕТКА ТОВАРОВ (общая — для каталога) -------- */
 .products-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -46,6 +46,34 @@
 .catalog-page .products-grid {
     grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
     gap: 16px;
+}
+
+/* -------- СЕТКА ДЛЯ ХИТОВ/НОВИНОК — фиксированно 4 колонки -------- */
+.products-grid-fixed {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    align-items: stretch;
+}
+
+@media (max-width: 1200px) {
+    .products-grid-fixed {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+    }
+}
+
+@media (max-width: 768px) {
+    .products-grid-fixed {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .products-grid-fixed {
+        grid-template-columns: 1fr;
+    }
 }
 
 .loading {
@@ -93,15 +121,17 @@
     box-shadow: var(--shadow-card-hover);
 }
 
-/* Заглушка-иконка */
+/* -------- ИЗОБРАЖЕНИЕ ТОВАРА -------- */
 .product-image-wrap {
     width: 100%;
     height: 200px;
-    background: linear-gradient(135deg, var(--accent-glow), rgba(96, 165, 250, 0.08));
-    display: grid;
-    place-items: center;
+    background: #f5f5f5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     position: relative;
     overflow: hidden;
+    padding: 12px;
 }
 
 .product-image-wrap svg {
@@ -114,16 +144,16 @@
 
 .product-card:hover .product-image-wrap svg { transform: scale(1.1); }
 
-/* Реальная картинка (если будет) */
+/* Реальная картинка */
 .product-image {
     width: 100%;
-    height: 200px;
-    object-fit: cover;
+    height: 100%;
+    object-fit: contain;
     display: block;
     transition: transform 0.4s ease;
 }
 
-.product-card:hover .product-image { transform: scale(1.03); }
+.product-card:hover .product-image { transform: scale(1.05); }
 
 .product-body {
     padding: 18px;
