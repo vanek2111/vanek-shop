@@ -47,6 +47,7 @@ async function loadProduct() {
     }
 
     document.title = `${data.name} — ExoTech`;
+    ExoStore.setProducts([data]);
     renderProduct(data);
 }
 
@@ -63,8 +64,8 @@ function renderProduct(p) {
                 <dl class="specs-list">
                     ${Object.entries(p.specs).map(([key, value]) => `
                         <div class="specs-row">
-                            <dt>${key}</dt>
-                            <dd>${value}</dd>
+                            <dt>${ExoStore.escape(key)}</dt>
+                            <dd>${ExoStore.escape(value)}</dd>
                         </div>
                     `).join('')}
                 </dl>
@@ -79,20 +80,20 @@ function renderProduct(p) {
             </div>
 
             <div class="product-detail-info">
-                <div class="product-detail-brand">${p.brand}</div>
-                <h1 class="product-detail-name">${p.name}</h1>
-                <div class="product-detail-category">${p.category}</div>
+                <div class="product-detail-brand">${ExoStore.escape(p.brand)}</div>
+                <h1 class="product-detail-name">${ExoStore.escape(p.name)}</h1>
+                <div class="product-detail-category">${ExoStore.escape(p.category)}</div>
 
                 <p class="product-detail-description">
-                    ${p.description || 'Описание появится позже.'}
+                    ${ExoStore.escape(p.description || 'Описание появится позже.')}
                 </p>
 
                 <div class="product-detail-price">
-                    ${p.price.toLocaleString()} <span>₽</span>
+                    ${ExoStore.price(p.price)}
                 </div>
 
                 <div class="product-detail-status ${p.in_stock ? 'in-stock' : 'out-of-stock'}">
-                    ${p.in_stock ? '● В наличии' : '● Нет в наличии'}
+                    ${p.in_stock ? 'В наличии' : 'Нет в наличии'}
                 </div>
 
                 <div class="product-detail-actions">
@@ -111,38 +112,11 @@ function renderProduct(p) {
 }
 
 // ========== КОРЗИНА ==========
-function getCart() {
-    try {
-        const raw = JSON.parse(localStorage.getItem('cart') || '[]');
-        if (raw.length > 0 && typeof raw[0] === 'number') {
-            const converted = raw.map(id => ({ id, qty: 1 }));
-            localStorage.setItem('cart', JSON.stringify(converted));
-            return converted;
-        }
-        return raw;
-    } catch (e) {
-        return [];
-    }
-}
+function getCart() { return ExoCart.get(); }
 
-function saveCart(cart) {
-    localStorage.setItem('cart', JSON.stringify(cart));
-    updateCartCount();
-}
+function saveCart(cart) { return ExoCart.save(cart); }
 
-function addToCart(productId) {
-    const cart = getCart();
-    const existing = cart.find(item => item.id === productId);
-
-    if (existing) {
-        existing.qty += 1;
-    } else {
-        cart.push({ id: productId, qty: 1 });
-    }
-
-    saveCart(cart);
-    showToast('Товар добавлен в корзину');
-}
+function addToCart(productId) { ExoStore.add(productId); }
 
 function updateCartCount() {
     const cart = getCart();
@@ -159,6 +133,8 @@ function showToast(message) {
     const toast = document.createElement('div');
     toast.className = 'toast';
     toast.textContent = message;
+    toast.setAttribute('role', 'status');
+    toast.setAttribute('aria-live', 'polite');
     document.body.appendChild(toast);
 
     requestAnimationFrame(() => toast.classList.add('toast-show'));

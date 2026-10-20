@@ -16,7 +16,8 @@ const state = {
     brand: 'all',
     priceMin: null,
     priceMax: null,
-    sort: 'default'
+    sort: 'default',
+    onlyStock: false
 };
 
 // ========== ИКОНКИ ПО КАТЕГОРИЯМ (дефолт) ==========
@@ -84,30 +85,23 @@ function getIcon(product) {
 // ========== ЗАГРУЗКА ==========
 async function loadProducts() {
     const grid = document.getElementById('products-grid');
-    const { data, error } = await db.from('products').select('*');
-
-    if (error) {
-        console.error('Ошибка:', error);
-        grid.innerHTML = '<p>Не удалось загрузить товары</p>';
-        return;
-    }
-
-    state.allProducts = data;
-    state.filteredProducts = [...data];
-
-    const params = new URLSearchParams(window.location.search);
-    const catFromUrl = params.get('cat');
-    const searchFromUrl = params.get('search');
-
-    if (catFromUrl) state.category = catFromUrl;
-    if (searchFromUrl) {
-        state.search = searchFromUrl;
-        document.getElementById('search-input').value = searchFromUrl;
-    }
-
-    renderCategories();
-    renderBrands();
-    applyFilters();
+    grid.setAttribute('aria-busy','true');
+    grid.innerHTML = '<p class="loading" role="status">Загружаем товары…</p>';
+    try {
+        const { data, error } = await db.from('products').select('*');
+        if (error || !Array.isArray(data)) throw error || new Error('Empty response');
+        state.allProducts = data;
+        ExoStore.setProducts(data);
+        readFiltersFromUrl();
+        renderCategories();
+        renderBrands();
+        syncFilterControls();
+        applyFilters();
+    } catch(error) {
+        console.error('Каталог недоступен:', error);
+        document.getElementById('catalog-count').textContent = 'Каталог временно недоступен';
+        grid.innerHTML = '<div class="load-error"><p>Не удалось получить товары. Попробуйте ещё раз.</p><button class="btn btn-ghost" type="button" data-retry-products>Повторить загрузку</button></div>';
+    } finally { grid.setAttribute('aria-busy','false'); }
 }
 
 // ========== КАТЕГОРИИ ==========
@@ -158,6 +152,7 @@ function renderBrands() {
 function applyFilters() {
     let result = [...state.allProducts];
 
+    if (state.onlyStock) result = result.filter(p => p.in_stock);
     if (state.category !== 'all') result = result.filter(p => p.category === state.category);
     if (state.brand !== 'all') result = result.filter(p => p.brand === state.brand);
 
@@ -176,10 +171,15 @@ function applyFilters() {
     else if (state.sort === 'price-desc') result.sort((a, b) => b.price - a.price);
     else if (state.sort === 'name-asc') result.sort((a, b) => a.name.localeCompare(b.name, 'ru'));
 
+    if (state.priceMin !== null && state.priceMax !== null && state.priceMin > state.priceMax) result = [];
+    if (state.sort === 'default') result.sort((a,b) => Number(b.in_stock) - Number(a.in_stock) || a.id - b.id);
     state.filteredProducts = result;
     renderProducts();
     updateCount();
     updateSubtitle();
+    syncFilterControls();
+    renderFilterTags();
+    writeFiltersToUrl();
 }
 
 function updateSubtitle() {
@@ -196,40 +196,17 @@ function updateCount() {
     const n = state.filteredProducts.length;
     const word = n % 10 === 1 && n % 100 !== 11 ? 'товар' :
                  (n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20)) ? 'товара' : 'товаров';
-    el.textContent = `Найдено: ${n} ${word}`;
+    el.textContent = `${n} ${word}`;
+    const apply = document.getElementById('filters-apply-btn');
+    if (apply) apply.textContent = `Показать: ${n} ${word}`;
 }
 
 // ========== ОТРИСОВКА ==========
 function renderProducts() {
     const grid = document.getElementById('products-grid');
     const noResults = document.getElementById('no-results');
-
-    if (state.filteredProducts.length === 0) {
-        grid.innerHTML = '';
-        noResults.style.display = 'block';
-        return;
-    }
-
-    noResults.style.display = 'none';
-    grid.innerHTML = state.filteredProducts.map(product => {
-        const imageUrl = getProductImage(product);
-        return `
-        <a href="product.html?id=${product.id}" class="product-card">
-            <div class="product-image-wrap">
-                ${imageUrl ? `<img class="product-image" src="${imageUrl}" alt="${product.name}" loading="lazy" decoding="async" onerror="this.hidden=true; this.parentElement.querySelector('.product-image-fallback').hidden=false">` : ''}
-                <div class="product-image-fallback" ${imageUrl ? 'hidden' : ''}>${getIcon(product)}</div>
-            </div>
-            <div class="product-body">
-                <div class="product-name">${product.name}</div>
-                <div class="product-brand">${product.brand}</div>
-                <div class="product-price">${product.price.toLocaleString()}</div>
-                <button class="product-btn" onclick="event.preventDefault(); addToCart(${product.id})">
-                    В корзину
-                </button>
-            </div>
-        </a>
-    `;
-    }).join('');
+    noResults.style.display = state.filteredProducts.length ? 'none' : 'block';
+    grid.innerHTML = state.filteredProducts.map(product => ExoStore.card(product)).join('');
 }
 
 // ========== СЛУШАТЕЛИ ==========
@@ -256,12 +233,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     priceMin.addEventListener('input', (e) => {
-        state.priceMin = e.target.value ? parseInt(e.target.value) : null;
+        state.priceMin = parsePrice(e.target.value);
         applyFilters();
     });
 
     priceMax.addEventListener('input', (e) => {
-        state.priceMax = e.target.value ? parseInt(e.target.value) : null;
+        state.priceMax = parsePrice(e.target.value);
         applyFilters();
     });
 
@@ -272,6 +249,7 @@ document.addEventListener('DOMContentLoaded', () => {
         state.priceMin = null;
         state.priceMax = null;
         state.sort = 'default';
+        state.onlyStock = false;
         searchInput.value = '';
         sortSelect.value = 'default';
         priceMin.value = '';
@@ -288,33 +266,11 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ========== КОРЗИНА ==========
-function getCart() {
-    try {
-        const raw = JSON.parse(localStorage.getItem('cart') || '[]');
-        if (raw.length > 0 && typeof raw[0] === 'number') {
-            const converted = raw.map(id => ({ id, qty: 1 }));
-            localStorage.setItem('cart', JSON.stringify(converted));
-            return converted;
-        }
-        return raw;
-    } catch (e) {
-        return [];
-    }
-}
+function getCart() { return ExoCart.get(); }
 
-function saveCart(cart) {
-    localStorage.setItem('cart', JSON.stringify(cart));
-    updateCartCount();
-}
+function saveCart(cart) { return ExoCart.save(cart); }
 
-function addToCart(productId) {
-    const cart = getCart();
-    const existing = cart.find(item => item.id === productId);
-    if (existing) existing.qty += 1;
-    else cart.push({ id: productId, qty: 1 });
-    saveCart(cart);
-    showToast('Товар добавлен в корзину');
-}
+function addToCart(productId) { ExoStore.add(productId); }
 
 function updateCartCount() {
     const cart = getCart();
@@ -331,6 +287,8 @@ function showToast(message) {
     const toast = document.createElement('div');
     toast.className = 'toast';
     toast.textContent = message;
+    toast.setAttribute('role', 'status');
+    toast.setAttribute('aria-live', 'polite');
     document.body.appendChild(toast);
 
     requestAnimationFrame(() => toast.classList.add('toast-show'));
@@ -344,3 +302,57 @@ function showToast(message) {
 // ========== СТАРТ ==========
 loadProducts();
 updateCartCount();
+
+function readFiltersFromUrl() {
+    const params = new URLSearchParams(location.search);
+    state.category = params.get('cat') || 'all';
+    state.search = params.get('search') || '';
+    state.brand = params.get('brand') || 'all';
+    state.sort = ['default','price-asc','price-desc','name-asc'].includes(params.get('sort')) ? params.get('sort') : 'default';
+    state.priceMin = parsePrice(params.get('min'));
+    state.priceMax = parsePrice(params.get('max'));
+    state.onlyStock = params.get('stock') === '1';
+}
+function parsePrice(value) { const n = Number(value); return value !== null && value !== '' && Number.isFinite(n) && n >= 0 ? n : null; }
+function writeFiltersToUrl() {
+    const params = new URLSearchParams();
+    if (state.category !== 'all') params.set('cat',state.category);
+    if (state.search.trim()) params.set('search',state.search.trim());
+    if (state.brand !== 'all') params.set('brand',state.brand);
+    if (state.sort !== 'default') params.set('sort',state.sort);
+    if (state.priceMin !== null) params.set('min',state.priceMin);
+    if (state.priceMax !== null) params.set('max',state.priceMax);
+    if (state.onlyStock) params.set('stock','1');
+    const next = location.pathname + (params.size ? '?' + params.toString() : '');
+    history.replaceState(null,'',next);
+}
+function syncFilterControls() {
+    document.getElementById('search-input').value = state.search;
+    document.getElementById('sort-select').value = state.sort;
+    document.getElementById('price-min').value = state.priceMin ?? '';
+    document.getElementById('price-max').value = state.priceMax ?? '';
+    document.getElementById('stock-only').checked = state.onlyStock;
+    document.querySelectorAll('[data-category]').forEach(button => { const on = button.dataset.category === state.category;button.classList.toggle('active',on);button.setAttribute('aria-pressed',String(on)); });
+    document.querySelectorAll('[data-brand]').forEach(button => { const on = button.dataset.brand === state.brand;button.classList.toggle('active',on);button.setAttribute('aria-pressed',String(on)); });
+    const error = document.getElementById('price-error');
+    error.hidden = !(state.priceMin !== null && state.priceMax !== null && state.priceMin > state.priceMax);
+    const count = [state.category!=='all',state.brand!=='all',Boolean(state.search.trim()),state.priceMin!==null,state.priceMax!==null,state.onlyStock].filter(Boolean).length;
+    const badge = document.getElementById('filters-count');badge.textContent = count || '';badge.style.display = count ? 'inline-flex' : 'none';
+}
+function renderFilterTags() {
+    const tags=[];
+    if(state.category!=='all') tags.push(['category',state.category]);
+    if(state.brand!=='all') tags.push(['brand',state.brand]);
+    if(state.search.trim()) tags.push(['search',`Поиск: ${state.search}`]);
+    if(state.priceMin!==null) tags.push(['priceMin',`От ${ExoStore.price(state.priceMin)}`]);
+    if(state.priceMax!==null) tags.push(['priceMax',`До ${ExoStore.price(state.priceMax)}`]);
+    if(state.onlyStock) tags.push(['onlyStock','В наличии']);
+    document.getElementById('active-filter-tags').innerHTML=tags.map(([key,label])=>`<button type="button" data-clear-filter="${key}" aria-label="Убрать фильтр: ${ExoStore.escape(label)}">${ExoStore.escape(label)} <span aria-hidden="true">×</span></button>`).join('');
+}
+document.addEventListener('click',event=>{
+    if(event.target.closest('[data-retry-products]')) loadProducts();
+    const clear=event.target.closest('[data-clear-filter]');
+    if(clear){const key=clear.dataset.clearFilter;state[key]=['category','brand'].includes(key)?'all':key==='search'?'':key==='onlyStock'?false:null;applyFilters();}
+});
+document.getElementById('stock-only').addEventListener('change',event=>{state.onlyStock=event.target.checked;applyFilters();});
+window.addEventListener('popstate',()=>{readFiltersFromUrl();syncFilterControls();applyFilters();});

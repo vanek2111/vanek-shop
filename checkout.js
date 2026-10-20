@@ -10,19 +10,7 @@ var db = window.db;
 let allProducts = [];
 
 // ========== КОРЗИНА ==========
-function getCart() {
-    try {
-        const raw = JSON.parse(localStorage.getItem('cart') || '[]');
-        if (raw.length > 0 && typeof raw[0] === 'number') {
-            const converted = raw.map(id => ({ id, qty: 1 }));
-            localStorage.setItem('cart', JSON.stringify(converted));
-            return converted;
-        }
-        return raw;
-    } catch (e) {
-        return [];
-    }
-}
+function getCart() { return ExoCart.get(); }
 
 function updateCartCount() {
     const cart = getCart();
@@ -105,13 +93,22 @@ async function initCheckout() {
         return;
     }
 
-    const { data, error } = await db.from('products').select('*');
-    if (error) {
-        console.error('Ошибка:', error);
+    const summary = document.getElementById('checkout-items');
+    summary.innerHTML = '<p role="status">Проверяем товары…</p>';
+    let data;
+    try {
+        const result = await db.from('products').select('*');
+        if (result.error) throw result.error;
+        data = result.data || [];
+    } catch (error) {
+        summary.innerHTML = '<p role="alert">Не удалось загрузить заказ. Проверь подключение и повтори попытку.</p><button class="btn btn-primary" id="checkout-retry" type="button">Повторить</button>';
+        document.getElementById('checkout-retry').addEventListener('click', initCheckout);
         return;
     }
 
     allProducts = data;
+    ExoStore.setProducts(data);
+    if (cart.some(item => !ExoStore.get(item.id)?.in_stock)) { location.href = 'cart.html'; return; }
     renderSummary();
     await prefillForm();
 }
@@ -177,7 +174,7 @@ function renderSummary() {
             ${items.map(item => `
                 <div class="checkout-item">
                     <div class="checkout-item-info">
-                        <span class="checkout-item-name">${item.name}</span>
+                        <span class="checkout-item-name">${ExoStore.escape(item.name)}</span>
                         <span class="checkout-item-qty">× ${item.qty}</span>
                     </div>
                     <span class="checkout-item-price">${(item.price * item.qty).toLocaleString()} ₽</span>
@@ -191,11 +188,11 @@ function renderSummary() {
         </div>
         <div class="checkout-summary-row">
             <span>Доставка</span>
-            <span>Бесплатно</span>
+            <span>Не выполняется</span>
         </div>
         <div class="checkout-total">
             <span>К оплате</span>
-            <strong>${total.toLocaleString()}</strong>
+            <strong>${ExoStore.price(total)}</strong>
         </div>
 
         <button type="button" class="btn btn-primary checkout-submit" id="checkout-submit">
@@ -272,6 +269,7 @@ async function submitOrder() {
     btn.textContent = 'Отправляем...';
 
     const cart = getCart();
+    if (!cart.length || cart.some(item => !ExoStore.get(item.id)?.in_stock)) { location.href = 'cart.html'; return; }
     const items = cart.map(item => {
         const product = allProducts.find(p => p.id === item.id);
         return product ? {
@@ -311,7 +309,7 @@ async function submitOrder() {
         return;
     }
 
-    localStorage.removeItem('cart');
+    ExoCart.save([]);
     updateCartCount();
     showSuccess(data.id);
 }
@@ -329,8 +327,8 @@ function showSuccess(orderId) {
             <h1>Спасибо за заказ!</h1>
             <p class="checkout-success-number">Заказ №${orderId} принят</p>
             <p class="checkout-success-text">
-                Мы свяжемся с вами в ближайшее время для подтверждения.
-                Копия заказа отправлена на вашу почту.
+                Это учебный заказ.
+                Заказ сохранён в учебном проекте; реальная оплата и доставка не выполняются.
             </p>
             <div class="checkout-success-actions">
                 <a href="catalog.html" class="btn btn-primary">Вернуться в каталог</a>

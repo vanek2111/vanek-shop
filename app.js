@@ -52,76 +52,36 @@ function getIcon(product) {
 
 // ========== ЗАГРУЗКА ==========
 async function loadProducts() {
-    const { data, error } = await db.from('products').select('*');
-    if (error) {
-        console.error('Ошибка:', error);
-        return;
-    }
-    renderHitsAndNew(data);
+    const grids = ['hits-grid', 'new-grid'].map(id => document.getElementById(id)).filter(Boolean);
+    grids.forEach(grid => { grid.setAttribute('aria-busy', 'true'); grid.innerHTML = '<p class="loading" role="status">Загружаем каталог…</p>'; });
+    try {
+        const { data, error } = await db.from('products').select('*');
+        if (error || !Array.isArray(data)) throw error || new Error('Empty response');
+        ExoStore.setProducts(data);
+        renderHitsAndNew(data);
+    } catch (error) {
+        console.error('Каталог недоступен:', error);
+        grids.forEach(grid => { grid.innerHTML = '<div class="load-error"><p>Не удалось загрузить товары. Проверьте соединение и попробуйте ещё раз.</p><button class="btn btn-ghost" type="button" data-retry-products>Повторить загрузку</button></div>'; });
+    } finally { grids.forEach(grid => grid.setAttribute('aria-busy', 'false')); }
 }
 
 // ========== ХИТЫ И НОВИНКИ ==========
 function renderHitsAndNew(data) {
-    const hits = [...data].sort((a, b) => b.price - a.price).slice(0, 8);
-    const newItems = [...data].sort((a, b) => b.id - a.id).slice(0, 8);
-
-    document.getElementById('hits-grid').innerHTML = hits.map(p => renderCard(p, 'ХИТ')).join('');
-    document.getElementById('new-grid').innerHTML = newItems.map(p => renderCard(p, 'NEW')).join('');
+    function select(ids) { return ids.map(id => data.find(p => p.id === id)).filter(Boolean); }
+    const picks = select([36, 42, 29, 35]);
+    const extras = select([55, 67, 13, 24]);
+    document.getElementById('hits-grid').innerHTML = picks.map(p => ExoStore.card(p)).join('');
+    document.getElementById('new-grid').innerHTML = extras.map(p => ExoStore.card(p)).join('');
 }
 
-function renderCard(product, badge) {
-    const imageUrl = getProductImage(product);
-    const image = imageUrl ? `
-        <img class="product-image" src="${imageUrl}" alt="${product.name}" loading="lazy" decoding="async"
-             onerror="this.hidden=true; this.parentElement.querySelector('.product-image-fallback').hidden=false">
-    ` : '';
-    return `
-        <a href="product.html?id=${product.id}" class="product-card">
-            <div class="product-image-wrap">
-                ${image}
-                <div class="product-image-fallback" ${imageUrl ? 'hidden' : ''}>${getIcon(product)}</div>
-                ${badge ? `<div class="product-badge">${badge}</div>` : ''}
-            </div>
-            <div class="product-body">
-                <div class="product-name">${product.name}</div>
-                <div class="product-brand">${product.brand}</div>
-                <div class="product-price">${product.price.toLocaleString()}</div>
-                <button class="product-btn" onclick="event.preventDefault(); addToCart(${product.id})">
-                    В корзину
-                </button>
-            </div>
-        </a>
-    `;
-}
+function renderCard(product) { return ExoStore.card(product); }
 
 // ========== КОРЗИНА ==========
-function getCart() {
-    try {
-        const raw = JSON.parse(localStorage.getItem('cart') || '[]');
-        if (raw.length > 0 && typeof raw[0] === 'number') {
-            const converted = raw.map(id => ({ id, qty: 1 }));
-            localStorage.setItem('cart', JSON.stringify(converted));
-            return converted;
-        }
-        return raw;
-    } catch (e) {
-        return [];
-    }
-}
+function getCart() { return ExoCart.get(); }
 
-function saveCart(cart) {
-    localStorage.setItem('cart', JSON.stringify(cart));
-    updateCartCount();
-}
+function saveCart(cart) { return ExoCart.save(cart); }
 
-function addToCart(productId) {
-    const cart = getCart();
-    const existing = cart.find(item => item.id === productId);
-    if (existing) existing.qty += 1;
-    else cart.push({ id: productId, qty: 1 });
-    saveCart(cart);
-    showToast('Товар добавлен в корзину');
-}
+function addToCart(productId) { ExoStore.add(productId); }
 
 function updateCartCount() {
     const cart = getCart();
@@ -138,6 +98,8 @@ function showToast(message) {
     const toast = document.createElement('div');
     toast.className = 'toast';
     toast.textContent = message;
+    toast.setAttribute('role', 'status');
+    toast.setAttribute('aria-live', 'polite');
     document.body.appendChild(toast);
 
     requestAnimationFrame(() => toast.classList.add('toast-show'));
@@ -286,3 +248,5 @@ if (reviewForm) {
         }, 2500);
     });
 }
+
+document.addEventListener("click", event => { if (event.target.closest("[data-retry-products]")) loadProducts(); });

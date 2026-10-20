@@ -3,19 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ExoTech — демо-магазин игровой периферии</title>
-    <meta name="description" content="Учебный проект интернет-магазина ExoTech: каталог игровой периферии, фильтры, карточки товаров и корзина. Оплата не подключена.">
+    <title>ExoTech — игровая периферия</title>
+    <meta name="description" content="Мыши, клавиатуры, гарнитуры и комплектующие. Подбор по характеристикам, поиск, фильтры и удобная корзина ExoTech.">
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="apple-touch-icon" href="favicon.svg">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="fonts/fonts.css">
     <link rel="stylesheet" href="css/base.css">
     <link rel="stylesheet" href="css/layout.css">
     <link rel="stylesheet" href="css/components.css">
     <link rel="stylesheet" href="css/home.css">
     <link rel="stylesheet" href="css/responsive.css">
-    <link rel="stylesheet" href="css/theme.css?v=demo-6">
     <link rel="stylesheet" href="css/auth.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
@@ -24,6 +21,7 @@
             document.documentElement.setAttribute('data-theme', saved);
         })();
     </script>
+    <link rel="stylesheet" href="css/refinement.css?v=20261020-2">
 </head>
 <body>
 
@@ -41,11 +39,12 @@
             </a>
             <nav>
                 <a href="catalog.html">Каталог</a>
-                <a href="#project-info">О проекте</a>
-                <a href="#features">Почему ExoTech</a>
+                <a href="#project-info">Помощь с выбором</a>
+                <a href="#features">О проекте</a>
                 <a href="#contacts">Контакты</a>
             </nav>
             <div class="navbar-actions">
+                <a class="header-search-link" href="catalog.html" aria-label="Поиск товаров"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="10.5" cy="10.5" r="7.5"/><path d="m16 16 5 5"/></svg></a>
                 <a href="login.html" class="auth-btn" id="auth-btn">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
@@ -62,7 +61,7 @@
                         <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
                     </svg>
                 </button>
-                <a href="cart.html" class="cart-btn">
+                <a href="cart.html" class="cart-btn" aria-label="Корзина">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <circle cx="9" cy="21" r="1"></circle>
                         <circle cx="20" cy="21" r="1"></circle>
@@ -70,7 +69,7 @@
                     </svg>
                     <span id="cart-count">0</span>
                 </a>
-                <button class="menu-toggle" id="menu-toggle" aria-label="Меню">
+                <button class="menu-toggle" id="menu-toggle" aria-label="Открыть меню" aria-controls="mobile-menu" aria-expanded="false">
                     <span></span>
                     <span></span>
                     <span></span>
@@ -79,63 +78,43 @@
         </div>
     </header>
 
-    <nav class="mobile-menu" id="mobile-menu">
+    <nav class="mobile-menu" id="mobile-menu" aria-label="Основная навигация">
         <a href="catalog.html">Каталог</a>
-        <a href="#project-info">О проекте</a>
-        <a href="#features">Почему ExoTech</a>
+        <a href="#project-info">Помощь с выбором</a>
+        <a href="#features">О проекте</a>
         <a href="#contacts">Контакты</a>
         <a href="login.html" id="auth-btn-mobile">Войти</a>
     </nav>
 
-    <div class="topbar">
-        <div class="container topbar-inner">
-            <div class="topbar-item">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m8 8-4 4 4 4M16 8l4 4-4 4M14 4l-4 16"></path></svg>
-                Учебный проект
-            </div>
-            <div class="topbar-item">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4M8 11h6M11 8v6"></path></svg>
-                Каталог с фильтрами
-            </div>
-            <div class="topbar-item">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="m8 8 8 8M16 8l-8 8"></path></svg>
-                Оплата не подключена
-            </div>
-        </div>
-    </div>
 
+    <main>
     <section class="hero">
-        <div class="hero-bg"></div>
-        <div class="container">
-            <div class="hero-copy">
-                <div class="hero-badge">ExoTech <span> / учебный проект</span></div>
-                <h1>СОБЕРИ СЕТАП<br>ПОД СВОЮ ИГРУ</h1>
-                <p>Демо-магазин игровой периферии: изучай каталог, фильтры, карточки товаров и корзину. Реальной оплаты нет.</p>
-                <div class="hero-actions">
-                    <a href="catalog.html" class="btn btn-primary">Открыть каталог <span aria-hidden="true">↗</span></a>
-                    <a href="#project-info" class="btn btn-ghost">Примеры отзывов</a>
-                </div>
-                <div class="hero-stats">
-                    <div><strong>01</strong><span>Каталог</span></div>
-                    <div><strong>02</strong><span>Фильтры</span></div>
-                    <div><strong>03</strong><span>Корзина</span></div>
-                </div>
-            </div>
-            <div class="hero-showcase" aria-label="Разделы каталога ExoTech">
-                <div class="showcase-top"><span>EXOTECH / GEAR SELECTOR</span><span>01—03</span></div>
-                <a href="catalog.html?cat=Мышки" class="showcase-item showcase-mouse"><span class="showcase-index">01</span><span class="showcase-icon" aria-hidden="true">⌁</span><span class="showcase-label"><strong>Мыши</strong><small>Точность в каждом движении</small></span><span class="showcase-arrow">↗</span></a>
-                <a href="catalog.html?cat=Клавиатуры" class="showcase-item showcase-keyboard"><span class="showcase-index">02</span><span class="showcase-icon" aria-hidden="true">⌨</span><span class="showcase-label"><strong>Клавиатуры</strong><small>Твой темп — твои правила</small></span><span class="showcase-arrow">↗</span></a>
-                <a href="catalog.html?cat=Наушники" class="showcase-item showcase-audio"><span class="showcase-index">03</span><span class="showcase-icon" aria-hidden="true">◖</span><span class="showcase-label"><strong>Аудио</strong><small>Слышать больше соперника</small></span><span class="showcase-arrow">↗</span></a>
-                <div class="showcase-foot"><span>SELECT YOUR GEAR</span><span class="showcase-dot"></span></div>
-            </div>
+      <div class="container">
+        <div class="hero-copy">
+          <p class="hero-kicker">Игровая периферия / ExoTech</p>
+          <h1>Твоя игра.<br><span>Твой сетап.</span></h1>
+          <p>От лёгкой мыши до механической клавиатуры. Найди устройства, с которыми удобно играть и работать.</p>
+          <form class="hero-search" action="catalog.html" role="search">
+            <label class="sr-only" for="hero-search">Поиск по каталогу</label>
+            <input id="hero-search" name="search" type="search" placeholder="Модель, бренд или устройство" autocomplete="off">
+            <button type="submit" aria-label="Найти товар"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="10.5" cy="10.5" r="7.5"/><path d="m16 16 5 5"/></svg></button>
+          </form>
+          <div class="hero-actions"><a href="catalog.html" class="btn btn-primary">Перейти в каталог <span aria-hidden="true">↗</span></a><a href="#project-info" class="hero-help">Помощь с выбором</a></div>
+          <div class="hero-categories"><a href="catalog.html?cat=Мышки">Мыши</a><a href="catalog.html?cat=Клавиатуры">Клавиатуры</a><a href="catalog.html?cat=Наушники">Гарнитуры</a></div>
         </div>
+        <a class="gear-stage" href="product.html?id=36" aria-label="Подробнее о Razer Viper V3 Pro">
+          <div class="gear-heading"><span>Razer</span><span>Беспроводная мышь</span></div>
+          <img src="assets/products/36.png" alt="Razer Viper V3 Pro, вид сверху" width="500" height="500" fetchpriority="high">
+          <div class="gear-caption"><div><h2>Viper V3 Pro</h2><p>54 г · 8 000 Гц · беспроводная</p></div><span aria-hidden="true">↗</span></div>
+        </a>
+      </div>
     </section>
 
     <section class="categories">
         <div class="container">
             <div class="section-head">
                 <h2>Категории</h2>
-                <p>Соберите сетап мечты</p>
+                <p>Начни с нужного устройства</p>
             </div>
             <div class="categories-grid">
                 <a href="catalog.html?cat=Мышки" class="category-tile">
@@ -182,8 +161,8 @@
         <div class="container">
             <div class="section-head-row">
                 <div>
-                    <h2>Хиты продаж</h2>
-                    <p>Выбор киберспортсменов</p>
+                    <h2>В фокусе</h2>
+                    <p>Мыши, клавиатуры и звук для игрового стола</p>
                 </div>
                 <a href="catalog.html" class="section-link">Все товары →</a>
             </div>
@@ -191,24 +170,14 @@
         </div>
     </section>
 
-    <section class="cta">
-        <div class="container">
-            <div class="cta-box demo-cta">
-                <div class="demo-cta-mark" aria-hidden="true">X</div>
-                <span class="demo-eyebrow">EXOTECH / PLAYGROUND</span>
-                <h2>Попробуй магазин в деле</h2>
-                <p>Открой каталог, настрой фильтры и добавь товары в корзину. Это учебный проект: оплата отключена.</p>
-                <a href="catalog.html" class="btn btn-primary">Перейти в каталог <span aria-hidden="true">↗</span></a>
-            </div>
-        </div>
-    </section>
+    <section class="cta"><div class="container"><div class="selection-banner"><div><p>Подбор без лишнего</p><h2>Сначала удобство.<br>Потом характеристики.</h2><p>Форма мыши, раскладка клавиатуры, посадка гарнитуры. Выбирай то, что подходит тебе.</p></div><a href="#project-info" class="btn btn-primary">На что смотреть при выборе ↗</a></div></div></section>
 
     <section id="new" class="section-products section-new">
         <div class="container">
             <div class="section-head-row">
                 <div>
-                    <h2>Новинки</h2>
-                    <p>Только что появились в каталоге</p>
+                    <h2>Дополнить сетап</h2>
+                    <p>Устройства и аксессуары в одном каталоге</p>
                 </div>
                 <a href="catalog.html" class="section-link">Все товары →</a>
             </div>
@@ -216,138 +185,17 @@
         </div>
     </section>
 
-    <section id="project-info" class="reviews project-info">
-        <div class="container">
-            <div class="section-head">
-                <h2>Отзывы <span>игроков</span></h2>
-                <p>Примеры отзывов для макета — замените их на реальные отзывы покупателей</p>
-            </div>
-            <div class="reviews-grid">
-                <div class="review-card">
-                    <div class="review-stars">★★★★★</div>
-                    <p class="review-text">Взял Wooting 60HE — Rapid Trigger это нечто. Реакция в CS стала заметно быстрее, уже поднял ранг. Доставили за день, всё в плёнке.</p>
-                    <div class="review-author">
-                        <img src="https://api.dicebear.com/7.x/avataaars/png?seed=Alexey&backgroundColor=b6e3f4&size=88" alt="Алексей" class="review-avatar-img">
-                        <div>
-                            <div class="review-name">Алексей М.</div>
-                            <div class="review-date">Пример отзыва</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="review-card">
-                    <div class="review-stars">★★★★★</div>
-                    <p class="review-text">Заказала парню мышь Lamzu Maya X на подарок. Он в шоке, говорит — лучшее, что держал в руках. Доставили за день, коробка целая.</p>
-                    <div class="review-author">
-                        <img src="https://api.dicebear.com/7.x/avataaars/png?seed=Ivan&backgroundColor=ffd5dc&size=88" alt="Мария" class="review-avatar-img">
-                        <div>
-                            <div class="review-name">Мария К.</div>
-                            <div class="review-date">Пример отзыва</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="review-card">
-                    <div class="review-stars">★★★★★</div>
-                    <p class="review-text">Artisan Zero — топ. Совсем другое ощущение от мыши, для шутеров идеально. Спасибо за консультацию, помогли с выбором.</p>
-                    <div class="review-author">
-                        <img src="https://api.dicebear.com/7.x/avataaars/png?seed=Dmitry&backgroundColor=c0aede&size=88" alt="Дмитрий" class="review-avatar-img">
-                        <div>
-                            <div class="review-name">Дмитрий В.</div>
-                            <div class="review-date">Пример отзыва</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="review-card">
-                    <div class="review-stars">★★★★☆</div>
-                    <p class="review-text">Кресло Secretlab Titan — огонь. Спина больше не болит после долгих стримов. Минус: собирал 40 минут, инструкция не самая понятная.</p>
-                    <div class="review-author">
-                        <img src="https://api.dicebear.com/7.x/avataaars/png?seed=Sergey&backgroundColor=d1d4f9&size=88" alt="Сергей" class="review-avatar-img">
-                        <div>
-                            <div class="review-name">Сергей П.</div>
-                            <div class="review-date">Пример отзыва</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="review-card">
-                    <div class="review-stars">★★★★★</div>
-                    <p class="review-text">Arctis Nova Pro — лучшее звучание из всех гарнитур, что пробовал. ANC реально работает, микрофон топ. Заказ пришёл на следующий день.</p>
-                    <div class="review-author">
-                        <img src="https://api.dicebear.com/7.x/avataaars/png?seed=Egor&backgroundColor=ffdfbf&size=88" alt="Егор" class="review-avatar-img">
-                        <div>
-                            <div class="review-name">Егор Л.</div>
-                            <div class="review-date">Пример отзыва</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="review-card">
-                    <div class="review-stars">★★★★★</div>
-                    <p class="review-text">Брал Razer Viper V3 Pro. Вес 54 г — это космос. Точность, отклик — всё на уровне. Упаковано отлично, приехало за сутки.</p>
-                    <div class="review-author">
-                        <img src="https://api.dicebear.com/7.x/avataaars/png?seed=Maria&backgroundColor=b6e3f4&size=88" alt="Иван" class="review-avatar-img">
-                        <div>
-                            <div class="review-name">Иван Р.</div>
-                            <div class="review-date">Пример отзыва</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="review-cta">
-        <div class="container">
-            <div class="review-cta-box">
-                <h2>Купил у нас? Оставь отзыв</h2>
-                <p>Помоги другим геймерам выбрать — расскажи, что думаешь</p>
-                <button class="btn btn-primary" id="open-review-modal">
-                    Оставить отзыв →
-                </button>
-            </div>
-        </div>
-    </section>
-
-    <div class="modal" id="review-modal">
-        <div class="modal-overlay" id="modal-overlay"></div>
-        <div class="modal-content">
-            <button class="modal-close" id="modal-close" aria-label="Закрыть">×</button>
-            <h2 class="modal-title">Оставить отзыв</h2>
-
-            <form class="review-form" id="review-form">
-                <div class="form-group">
-                    <label for="review-name">Имя</label>
-                    <input type="text" id="review-name" placeholder="Как вас зовут?" required>
-                </div>
-
-                <div class="form-group">
-                    <label>Оценка</label>
-                    <div class="rating-input" id="rating-input">
-                        <span data-rating="1">★</span>
-                        <span data-rating="2">★</span>
-                        <span data-rating="3">★</span>
-                        <span data-rating="4">★</span>
-                        <span data-rating="5">★</span>
-                    </div>
-                    <input type="hidden" id="review-rating" value="5">
-                </div>
-
-                <div class="form-group">
-                    <label for="review-text">Отзыв</label>
-                    <textarea id="review-text" rows="4" placeholder="Что понравилось? Что можно улучшить?" required></textarea>
-                </div>
-
-                <button type="submit" class="btn btn-primary" id="review-submit">
-                    Отправить отзыв
-                </button>
-
-                <div class="form-message" id="review-message"></div>
-            </form>
-        </div>
-    </div>
+    <section id="project-info" class="buying-guide"><div class="container guide-layout"><div><p class="section-kicker">Помощь с выбором</p><h2>Не только<br>цифры на коробке.</h2><p>Несколько ориентиров, которые помогут сузить выбор.</p></div><div class="guide-questions">
+      <details><summary>Как выбрать мышь?</summary><p>Начни с размера корпуса, формы и привычного хвата. Затем сравни вес, подключение и расположение боковых кнопок. Эти параметры влияют на удобство сильнее, чем одно максимальное значение DPI.</p><a href="catalog.html?cat=Мышки">Посмотреть мыши ↗</a></details>
+      <details><summary>Какой формат клавиатуры нужен?</summary><p>Компактная клавиатура оставляет больше места для мыши. Если пользуешься цифровым блоком или отдельными функциональными клавишами, проверь раскладку до покупки. Тип переключателей и доступные подключения указаны в карточке.</p><a href="catalog.html?cat=Клавиатуры">Посмотреть клавиатуры ↗</a></details>
+      <details><summary>На что смотреть в гарнитуре?</summary><p>Сравни вес, тип подключения, конструкцию амбушюр и микрофона. Для беспроводных моделей проверь заявленную автономность. Не забудь о совместимости с устройством, к которому будешь подключаться.</p><a href="catalog.html?cat=Наушники">Посмотреть гарнитуры ↗</a></details>
+    </div></div></section>
 
     <section class="brands">
         <div class="container">
             <div class="section-head">
                 <h2>Бренды в каталоге</h2>
-                <p>Демонстрационные позиции для наполнения учебного магазина</p>
+                <p>Производители устройств в каталоге</p>
             </div>
             <div class="brands-grid">
                 <div class="brand-item">Wooting</div>
@@ -366,44 +214,8 @@
         </div>
     </section>
 
-    <section id="features" class="features">
-        <div class="container">
-            <div class="section-head">
-                <h2>Почему ExoTech</h2>
-                <p>Всё, чтобы спокойно выбрать периферию и собрать свой игровой сетап</p>
-            </div>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-                    </div>
-                    <h3>Каталог по категориям</h3>
-                    <p>Мыши, клавиатуры, звук и другие аксессуары собраны в одном месте.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8" cy="8" r="1.5"/><path d="m3 17 5-5 4 4 4-6 5 7"/></svg>
-                    </div>
-                    <h3>Фото и описания</h3>
-                    <p>Рассмотри товары и основные детали перед тем, как добавить их в корзину.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="13" rx="2"/><path d="M12 16v5m-5 0h10"/></svg>
-                    </div>
-                    <h3>Собери свой сетап</h3>
-                    <p>Подбирай устройства для игры и работы в удобном каталоге.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h3l3 12h11l3-9H6"/><circle cx="9" cy="20" r="1"/><circle cx="19" cy="20" r="1"/></svg>
-                    </div>
-                    <h3>Корзина под рукой</h3>
-                    <p>Сохраняй выбранные товары и проверь состав заказа перед оформлением.</p>
-                </div>
-            </div>
-        </div>
-    </section>
+    <section id="features" class="project-note"><div class="container"><h2>О проекте</h2><p>ExoTech — учебный магазин с каталогом, фильтрами, корзиной и личным кабинетом. Можно собрать заказ и посмотреть оформление. Реальная оплата и доставка не выполняются.</p></div></section>
+    </main>
 
     <footer id="contacts">
         <div class="container footer-inner">
@@ -418,44 +230,24 @@
                     </span>
                     <span class="logo-text">EXO<em>TECH</em></span>
                 </div>
-                <p>Периферия для побед</p>
+                <p>Игровая периферия без лишнего</p>
             </div>
             <div class="footer-links">
                 <a href="catalog.html">Каталог</a>
-                <a href="#features">Почему ExoTech</a>
-                <a href="#project-info">О проекте</a>
+                <a href="#features">О проекте</a>
+                <a href="#project-info">Помощь с выбором</a>
                 <a href="#contacts">Контакты</a>
             </div>
             <div class="footer-copy">© 2026 ExoTech</div>
         </div>
     </footer>
 
-    <script src="product-images.js?v=mouse-photos-2"></script>
-    <script src="app.js?v=mouse-photos-1"></script>
+    <script src="product-images.js?v=20261020-2"></script>
+    <script src="shop-core.js?v=20261020-2"></script>
+    <script src="app.js?v=20261020-2"></script>
     <script src="auth.js"></script>
     <script>
-        const toggle = document.getElementById('theme-toggle');
-        toggle.addEventListener('click', () => {
-            const current = document.documentElement.getAttribute('data-theme');
-            const next = current === 'light' ? 'dark' : 'light';
-            document.documentElement.setAttribute('data-theme', next);
-            localStorage.setItem('theme', next);
-        });
-
-        const menuToggle = document.getElementById('menu-toggle');
-        const mobileMenu = document.getElementById('mobile-menu');
-        if (menuToggle && mobileMenu) {
-            menuToggle.addEventListener('click', () => {
-                menuToggle.classList.toggle('active');
-                mobileMenu.classList.toggle('open');
-            });
-            mobileMenu.querySelectorAll('a').forEach(link => {
-                link.addEventListener('click', () => {
-                    menuToggle.classList.remove('active');
-                    mobileMenu.classList.remove('open');
-                });
-            });
-        }
     </script>
+    <script src="shop-ui.js?v=20261020-2"></script>
 </body>
 </html>
