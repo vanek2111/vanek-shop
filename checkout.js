@@ -191,16 +191,17 @@ function renderSummary() {
             <span>Не выполняется</span>
         </div>
         <div class="checkout-total">
-            <span>К оплате</span>
+            <span>Итого в демо</span>
             <strong>${ExoStore.price(total)}</strong>
         </div>
 
         <button type="button" class="btn btn-primary checkout-submit" id="checkout-submit">
-            Оформить заказ
+            Сохранить учебный заказ
         </button>
     `;
 
     document.getElementById('checkout-submit').addEventListener('click', submitOrder);
+    document.getElementById('checkout-form').onsubmit = event => {event.preventDefault();submitOrder();};
 }
 
 // ========== ВАЛИДАЦИЯ ==========
@@ -258,13 +259,14 @@ function validateForm() {
 
 // ========== ОТПРАВКА ЗАКАЗА ==========
 async function submitOrder() {
+    const btn = document.getElementById('checkout-submit');
+    if (!btn || btn.disabled) return;
     if (!validateForm()) {
         const firstError = document.querySelector('.input-error');
         if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
         return;
     }
 
-    const btn = document.getElementById('checkout-submit');
     btn.disabled = true;
     btn.textContent = 'Отправляем...';
 
@@ -283,6 +285,12 @@ async function submitOrder() {
 
     const total = items.reduce((sum, item) => sum + item.price * item.qty, 0);
 
+    const form=document.getElementById('checkout-form');
+    form.setAttribute('aria-busy','true');
+    let feedback=document.getElementById('checkout-feedback');
+    if(!feedback){feedback=document.createElement('p');feedback.id='checkout-feedback';feedback.setAttribute('role','status');feedback.setAttribute('aria-live','polite');btn.after(feedback);}
+    feedback.textContent='Сохраняем учебный заказ…';
+    try {
     const { data: { session } } = await db.auth.getSession();
     const userId = session?.user?.id || null;
 
@@ -301,17 +309,17 @@ async function submitOrder() {
 
     const { data, error } = await db.from('orders').insert(order).select().single();
 
-    if (error) {
-        console.error('Ошибка:', error);
-        btn.disabled = false;
-        btn.textContent = 'Оформить заказ';
-        alert('Не удалось отправить заказ. Попробуйте ещё раз.');
-        return;
-    }
-
+    if (error) throw error;
+    if (!data?.id) throw new Error('Missing order confirmation');
     ExoCart.save([]);
     updateCartCount();
     showSuccess(data.id);
+    } catch {
+      feedback.textContent='Не удалось подтвердить сохранение. Корзина и заполненные поля сохранены. Проверьте соединение и повторите попытку.';
+    } finally {
+      if(btn.isConnected){btn.disabled=false;btn.textContent='Сохранить учебный заказ';}
+      form.removeAttribute('aria-busy');
+    }
 }
 
 // ========== ЭКРАН "СПАСИБО" ==========
