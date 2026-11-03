@@ -60,3 +60,5 @@
 .product-detail-specs .specs-row dt,.product-detail-specs .specs-row dd{min-width:0;margin:0;line-height:1.6;white-space:normal;overflow-wrap:anywhere}
 .product-detail-specs .specs-row dd{text-align:right}
 @media(max-width:768px){.product-detail-specs .specs-list{grid-template-columns:minmax(0,1fr);column-gap:0}.product-detail-specs .specs-row{column-gap:20px}}
+
+.logo-mark svg{display:block;width:32px;height:32px}.logo-mark{color:var(--accent)}.auth-logo>svg{width:40px;height:40px;color:var(--accent);flex-shrink:0}
