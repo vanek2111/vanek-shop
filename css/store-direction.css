@@ -54,3 +54,9 @@
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important}}
 .auth-box{border-radius:0!important;box-shadow:none!important;border:1px solid var(--border);border-top:3px solid var(--accent);background:var(--card);padding:34px;max-width:440px}
 @media(max-width:640px){.auth-box{padding:25px 22px;width:100%;max-width:440px}.auth-container{width:100%;min-width:0}}
+/* Keep neighbouring specification pairs separated, including long values. */
+.product-detail-specs .specs-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:40px;margin:0;padding:0}
+.product-detail-specs .specs-row{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);column-gap:20px;align-items:start;padding:14px 0;border-bottom:1px solid var(--border);min-width:0}
+.product-detail-specs .specs-row dt,.product-detail-specs .specs-row dd{min-width:0;margin:0;line-height:1.6;white-space:normal;overflow-wrap:anywhere}
+.product-detail-specs .specs-row dd{text-align:right}
+@media(max-width:768px){.product-detail-specs .specs-list{grid-template-columns:minmax(0,1fr);column-gap:0}.product-detail-specs .specs-row{column-gap:20px}}
